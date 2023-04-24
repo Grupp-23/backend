@@ -6,7 +6,7 @@ import org.eclipse.jetty.websocket.servlet.WebSocketServletFactory;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        Server server = new Server(8080);
+        Server server = new Server(25565);
         WebSocketHandler wsHandler = new WebSocketHandler() {
             @Override
             public void configure(WebSocketServletFactory factory) {
@@ -16,5 +16,6 @@ public class Main {
         server.setHandler(wsHandler);
         server.start();
         server.join();
+
     }
 }
