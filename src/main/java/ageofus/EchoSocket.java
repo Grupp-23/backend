@@ -33,10 +33,10 @@ public class EchoSocket {
     }
 
     @OnWebSocketClose
-    public void onClose(int statusCode, String reason) {
+    public void onClose(Session session, int statusCode, String reason) {
         System.out.println("Connection closed with statusCode=" + statusCode + ", reason=" + reason);
-        sessions.clear(); // todo ta bara bort specifica sessionen inte alla.
-        if(sessions.isEmpty()){
+        sessions.remove(session); // todo ta bara bort specifica sessionen inte alla.
+        if(!(sessions.contains(session))){
             System.out.println("du tömde skiten");
         }
     }
@@ -60,6 +60,7 @@ public class EchoSocket {
                     System.out.println("Ny tråd skapad");
                     if(!(sessions.isEmpty())){
                         System.out.println("Finns en session i listan");
+                        System.out.println(sessionsList.size());
                     }
 
                     Thread.sleep(10000);
@@ -79,7 +80,7 @@ public class EchoSocket {
                 if (sessionsList.size() >= 2) {
                     Session session1 = sessionsList.get(0);
                     Session session2 = sessionsList.get(1);
-
+                    System.out.println("Är denna startad? ");
                     try {
                         session1.getRemote().sendString("Match found! You are matched with another player.");
                         session2.getRemote().sendString("Match found! You are matched with another player.");
