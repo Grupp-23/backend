@@ -6,7 +6,6 @@ import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 
-import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -48,11 +47,19 @@ public class EchoSocket {
 
 
     private class MatchHandler extends Thread{
+        Object[] sessionArray = sessions.toArray();
+        Session session1 = (Session) sessionArray[0];
+        Session session2 = (Session) sessionArray[1];
 
 
         public void run(){
-            System.out.println("You have found a match");
-            onMessage("You have found a match");
+            System.out.println("Two players have joined, they have started a match");
+            if (session1 != null){
+                System.out.println("Session 1 is connected");
+            }
+            if (session2 != null){
+                System.out.println("Session 2 is connected");
+            }
         }
 
     }
