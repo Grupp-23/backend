@@ -15,15 +15,19 @@ public class EchoSocket {
     private Set<Session> sessions = Collections.synchronizedSet(new HashSet<>());
     private List<Session> sessionsList = Collections.synchronizedList(new ArrayList<>());
     private Object lock = new Object();
+    private volatile int counter = 0;
 
     @OnWebSocketConnect
     public void onConnect(Session session) {
         System.out.println("Client connected: " + session.getRemoteAddress().getAddress());
         sessions.add(session);
         sessionsList.add(session);
+
         Thread thread = new Thread(new WebSocketHandler(session));
         thread.start();
         synchronized (lock){
+
+            System.out.println(counter);
             if(sessionsList.size() >=2){
                 Thread matchThread = new MatchHandler();
                 matchThread.start();
@@ -57,6 +61,9 @@ public class EchoSocket {
         public void run(){
             while(session.isOpen()){
                 try{
+                    synchronized (lock) {
+                        counter++;
+                    }
                     System.out.println("Ny tråd skapad");
                     if(!(sessions.isEmpty())){
                         System.out.println("Finns en session i listan");
@@ -76,6 +83,7 @@ public class EchoSocket {
         private List<Session> matchThread =  Collections.synchronizedList(new ArrayList<>());
 
         public void run(){
+
 
                 if (sessionsList.size() >= 2) {
                     Session session1 = sessionsList.get(0);
