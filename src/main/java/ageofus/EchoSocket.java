@@ -26,9 +26,11 @@ public class EchoSocket {
         System.out.println("Client connected: " + session.getRemoteAddress().getAddress());
         sessions.add(session);
         System.out.println("Amount of connections: "+ sessions.size());
-        // ---- Starting thread -----
-        WebSocketHandler webSocketHandler = new WebSocketHandler(session);
-        webSocketHandler.start();
+        // ---- Starting thread for match-----
+        if(sessions.size() >= 2){
+            MatchHandler matchHandler = new MatchHandler();
+            matchHandler.start();
+        }
 
     }
 
@@ -44,28 +46,13 @@ public class EchoSocket {
         System.out.println("Received message: " + message);
     }
 
-    private class WebSocketHandler extends Thread{
-
-        private Session session;
-
-        public WebSocketHandler(Session session){
-            this.session=session;
-        }
-
-        public void run(){
-            
-        }
-    }
 
     private class MatchHandler extends Thread{
 
-        private List<Session> matchThread =  Collections.synchronizedList(new ArrayList<>());
 
         public void run(){
-
-
-
-
+            System.out.println("You have found a match");
+            onMessage("You have found a match");
         }
 
     }
