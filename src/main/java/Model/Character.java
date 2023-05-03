@@ -1,4 +1,4 @@
-package ageofus;
+package Model;
 
 public abstract class Character {
 
