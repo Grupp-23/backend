@@ -28,7 +28,6 @@ public class EchoSocket {
         // ---- Starting thread for match-----
         if(sessions.size() >= 2){
             MatchHandler matchHandler = new MatchHandler();
-            matchHandler.start();
         }
 
     }
@@ -47,11 +46,16 @@ public class EchoSocket {
 
 
     private class MatchHandler extends Thread{
-        Object[] sessionArray = sessions.toArray();
-        Session session1 = (Session) sessionArray[0];
-        Session session2 = (Session) sessionArray[1];
-
-
+        Object[] sessionArray;
+        Session session1;
+        Session session2;
+        public MatchHandler(){
+            sessionArray = sessions.toArray();
+            session1 = (Session) sessionArray[0];
+            session2 = (Session) sessionArray[1];
+            start();
+        }
+        
         public void run(){
             System.out.println("Two players have joined, they have started a match");
             if (session1 != null){
