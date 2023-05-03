@@ -23,7 +23,10 @@ public class EchoSocket {
         System.out.println("Amount of connections: "+ sessions.size());
         // ---- Assigning a client -----
         ClientThread clientThread = new ClientThread(session);
-
+        if(clientThreads.size() == 2){
+            MatchHandler matchHandler = new MatchHandler();
+            System.out.println("Clients is placed in match");
+        }
     }
 
 
@@ -52,27 +55,25 @@ public class EchoSocket {
         }
 
         public void run() {
-            MatchHandler matchHandler = new MatchHandler();
-            System.out.println("Client is placed in match");
+
+
         }
     }
 
 
     private class MatchHandler extends Thread{
 
+        Object[] clientArray;
+        ClientThread client1;
+        ClientThread client2;
         public MatchHandler(){
-            start();
+            clientArray = clientThreads.toArray();
+            client1 = (ClientThread) clientArray[0];
+            client2 = (ClientThread) clientArray[1];
+            
+            //start();
         }
-        public void assignPairs(ArrayList<ClientThread> clientThreads){
 
-            ArrayList<ClientThread> clientPairs = new ArrayList<>();
-            while (clientPairs.size() < 2){
-                for (int i = 0; i < clientThreads.size(); i++){
-                    clientPairs.add(clientThreads.get(i));
-                }
-            }
-
-        }
 
         public void run(){
 
