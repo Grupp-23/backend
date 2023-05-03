@@ -59,7 +59,7 @@ public class EchoSocket {
 
         }
     }
-    
+
     private class MatchHandler extends Thread{
 
         Object[] clientArray;
