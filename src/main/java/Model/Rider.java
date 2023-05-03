@@ -64,4 +64,8 @@ public class Rider extends Character {
     public int getKillReward(){
         return killedReward;
     }
+
+    public int getCost() {
+        return cost;
+    }
 }

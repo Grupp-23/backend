@@ -10,6 +10,8 @@ public class GameManager {
      * Starts the game when two clients are ready
      */
     public void startGame(){
+    Player player1 = new Player();
+    Player player2 = new Player();
 
     }
 
@@ -40,12 +42,29 @@ public class GameManager {
 
     }
 
+    public void spawnCharacter(int characterType){ // CharacterType= the type of character played
+
+        switch(characterType){
+
+            case 1:
+                Character melee = new Melee(100, 0,true);
+                break;
+            case 2:
+                Character archer = new Archer(100, 0, true);
+                break;
+            case 3:
+                Character rider = new Rider(100, 0, true);
+                break;
+        }
+        
+    }
+
     /**
      * Checks so a player has sufficent amount of gold before buying a character
      * @return returns if player can buy character or not
      */
     public boolean checkGold(){
-        return player.getMoney() >= character;
+        return player.getMoney() >= character.getCost();
     }
 
     /**
