@@ -12,12 +12,8 @@ import java.util.concurrent.CopyOnWriteArraySet;
 @WebSocket
 public class EchoSocket {
 
-
     private static Set<Session> sessions = new CopyOnWriteArraySet<>();
-
-
-
-
+    private static Set<ClientThread> clientThreads = new CopyOnWriteArraySet<>();
 
 
     @OnWebSocketConnect
@@ -25,10 +21,8 @@ public class EchoSocket {
         System.out.println("Client connected: " + session.getRemoteAddress().getAddress());
         sessions.add(session);
         System.out.println("Amount of connections: "+ sessions.size());
-        // ---- Starting thread for match-----
-        if(sessions.size() >= 2){
-            MatchHandler matchHandler = new MatchHandler();
-        }
+        // ---- Assigning a client -----
+        ClientThread clientThread = new ClientThread(session);
 
     }
 
@@ -45,25 +39,43 @@ public class EchoSocket {
     }
 
 
-    private class MatchHandler extends Thread{
-        Object[] sessionArray;
-        Session session1;
-        Session session2;
-        public MatchHandler(){
-            sessionArray = sessions.toArray();
-            session1 = (Session) sessionArray[0];
-            session2 = (Session) sessionArray[1];
+    private class ClientThread extends Thread{
+
+        private Session session;
+
+        public ClientThread(Session session){
+            this.session = session;
+            clientThreads.add(this);
+            System.out.println(clientThreads.toString());
+            System.out.println("Client has been assign thread");
             start();
         }
-        
+
+        public void run() {
+            MatchHandler matchHandler = new MatchHandler();
+            System.out.println("Client is placed in match");
+        }
+    }
+
+
+    private class MatchHandler extends Thread{
+
+        public MatchHandler(){
+            start();
+        }
+        public void assignPairs(ArrayList<ClientThread> clientThreads){
+
+            ArrayList<ClientThread> clientPairs = new ArrayList<>();
+            while (clientPairs.size() < 2){
+                for (int i = 0; i < clientThreads.size(); i++){
+                    clientPairs.add(clientThreads.get(i));
+                }
+            }
+
+        }
+
         public void run(){
-            System.out.println("Two players have joined, they have started a match");
-            if (session1 != null){
-                System.out.println("Session 1 is connected");
-            }
-            if (session2 != null){
-                System.out.println("Session 2 is connected");
-            }
+
         }
 
     }
