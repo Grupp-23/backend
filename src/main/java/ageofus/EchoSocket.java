@@ -17,14 +17,14 @@ public class EchoSocket {
 
 
     @OnWebSocketConnect
-    public void onConnect(Session session) { //When 
-        System.out.println("Client connected: " + session.getRemoteAddress().getAddress());
-        sessions.add(session);
+    public void onConnect(Session session) { //When client connects to the server
+        System.out.println("Client connected: " + session.getRemoteAddress().getAddress()); //Prints out the client ID
+        sessions.add(session); //Adds session to a list
         System.out.println("Amount of connections: "+ sessions.size());
         // ---- Assigning a client -----
-        ClientThread clientThread = new ClientThread(session);
-        if(clientThreads.size() == 2){
-            MatchHandler matchHandler = new MatchHandler();
+        ClientThread clientThread = new ClientThread(session); //Starting a thread for the client
+        if(clientThreads.size() == 2){ // If there is two clients in the clientThreads list
+            MatchHandler matchHandler = new MatchHandler(); //Start a match thread
             System.out.println("Clients is placed in match");
         }
     }
@@ -47,11 +47,11 @@ public class EchoSocket {
         private Session session;
 
         public ClientThread(Session session){
-            this.session = session;
-            clientThreads.add(this);
+            this.session = session; //Assigns a specific session for this client
+            clientThreads.add(this); //Adds this client to the client list
             System.out.println(clientThreads.toString());
             System.out.println("Client has been assign thread");
-            start();
+            start(); //starts the clients thread
         }
 
         public void run() {
@@ -59,23 +59,22 @@ public class EchoSocket {
 
         }
     }
-
-
+    
     private class MatchHandler extends Thread{
 
         Object[] clientArray;
         ClientThread client1;
         ClientThread client2;
         public MatchHandler(){
-            clientArray = clientThreads.toArray();
-            client1 = (ClientThread) clientArray[0];
-            client2 = (ClientThread) clientArray[1];
+            clientArray = clientThreads.toArray(); //Creates a array from the set-list
+            client1 = (ClientThread) clientArray[0]; //assigns the first client in the match
+            client2 = (ClientThread) clientArray[1]; //assigns the second client in the match
 
+            //This part removes the first two clients from the clientList, which lets the other clients in this list to take there place to then be assigned a match.
+            clientThreads.remove(client1); //Removes the first client in the list
+            clientThreads.remove(client2); //Removes the second client in the list
 
-            clientThreads.remove(client1);
-            clientThreads.remove(client2);
-
-            //start();
+            start(); //Start the match thread
         }
 
         public void run(){
