@@ -2,10 +2,10 @@ package Model;
 
 public abstract class Character {
 
-    private int healthPoints;
-    private int position;
-    private boolean isAlive;
-    private int killedReward;
+    private int healthPoints; //Health of a character
+    private int position; //Position of a character
+    private boolean isAlive; //Status to check if a character is alive
+    private int killedReward; //Amount of gold for killing a character
 
     public Character(int healthPoints, int position, boolean isAlive){
 
@@ -45,7 +45,7 @@ public abstract class Character {
     }
 
     /**
-     * Method to get position of each played character. 
+     * Method to get position of each played character.
      */
     public int getPosition() {
         return position;
