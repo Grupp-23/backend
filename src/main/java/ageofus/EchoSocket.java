@@ -8,6 +8,7 @@ import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -58,7 +59,11 @@ public class EchoSocket {
             start(); //starts the clients thread
         }
         public void sendJson(String json){
-            
+            try {
+                session.getRemote().sendString(json);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         public void run() {
@@ -72,6 +77,8 @@ public class EchoSocket {
         Object[] clientArray;
         ClientThread client1;
         ClientThread client2;
+
+
         public MatchHandler(){
             clientArray = clientThreads.toArray(); //Creates a array from the set-list
             client1 = (ClientThread) clientArray[0]; //assigns the first client in the match
@@ -85,8 +92,13 @@ public class EchoSocket {
         }
 
         public void run(){
-
-
+            ArrayList<String> list = new ArrayList<String>();
+            list.add("str1");
+            list.add("str2");
+            list.add("str3");
+            String json = new Gson().toJson(list);
+            client1.sendJson(json);
+            client2.sendJson(json);
         }
 
     }
