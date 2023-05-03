@@ -96,9 +96,35 @@ public class EchoSocket {
             list.add("str1");
             list.add("str2");
             list.add("str3");
-            String json = new Gson().toJson(list);
-            client1.sendJson(json);
-            client2.sendJson(json);
+            String json1 = "found";
+
+            try {
+                sleep(3000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
+            client1.sendJson(json1);
+            client2.sendJson(json1);
+
+            try {
+                sleep(3000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
+            for (int i = 0; i < 100; i++){
+
+                String jsonBorn = "{ \"method\": \"update\",\"game\": [{ \"team\": 0,\"id\":1,\"pos\":"+i+"}]}";
+                System.out.println(jsonBorn);
+                client1.sendJson(jsonBorn);
+                client2.sendJson(jsonBorn);
+                try {
+                    sleep(50);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         }
 
     }
