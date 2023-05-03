@@ -1,5 +1,7 @@
 package ageofus;
 
+import com.google.gson.Gson;
+import org.eclipse.jetty.util.ajax.JSON;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
@@ -8,6 +10,8 @@ import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArraySet;
+
+
 
 @WebSocket
 public class EchoSocket {
@@ -53,6 +57,9 @@ public class EchoSocket {
             System.out.println("Client has been assign thread");
             start(); //starts the clients thread
         }
+        public void sendJson(String json){
+            
+        }
 
         public void run() {
 
@@ -78,6 +85,7 @@ public class EchoSocket {
         }
 
         public void run(){
+
 
         }
 
