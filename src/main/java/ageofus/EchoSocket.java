@@ -17,7 +17,7 @@ public class EchoSocket {
 
 
     @OnWebSocketConnect
-    public void onConnect(Session session) {
+    public void onConnect(Session session) { //When 
         System.out.println("Client connected: " + session.getRemoteAddress().getAddress());
         sessions.add(session);
         System.out.println("Amount of connections: "+ sessions.size());
@@ -70,10 +70,13 @@ public class EchoSocket {
             clientArray = clientThreads.toArray();
             client1 = (ClientThread) clientArray[0];
             client2 = (ClientThread) clientArray[1];
-            
+
+
+            clientThreads.remove(client1);
+            clientThreads.remove(client2);
+
             //start();
         }
-
 
         public void run(){
 
