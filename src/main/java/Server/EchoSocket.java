@@ -1,6 +1,6 @@
 package Server;
 
-import Model.GameManager;
+
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
@@ -46,7 +46,7 @@ public class EchoSocket {
             sessionArray = sessions.toArray();
             session1 = (Session) sessionArray[0];
             session2 = (Session) sessionArray[1];
-            GameManager game = new GameManager();
+
             start();
         }
         
@@ -54,14 +54,12 @@ public class EchoSocket {
             System.out.println("Two players have joined, they have started a match");
             if (session1 != null){
                 System.out.println("Session 1 is connected");
-                // register player 0 for team 0
+
             }
             if (session2 != null){
                 System.out.println("Session 2 is connected");
             }
-            while(true){
-                // Update game loop, everything that happens (characters attacking etc...)
-            }
+
         }
     }
 }
