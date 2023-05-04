@@ -7,8 +7,7 @@ public class GameManager {
     //Lägg in spelarna i en lista (väntar svar på oliver från hans kod)
 
     private boolean gameWinner;
-    private HashMap<Integer, Character> team0Characters = new HashMap<>();
-    private HashMap<Integer, Character> team1Characters = new HashMap<>();
+    private HashMap<Integer, Character>[] teams = new HashMap[2];
     private int characterCounter = 0;
     private Player player0;
     private Player player1;
@@ -19,6 +18,8 @@ public class GameManager {
     public void startGame(){
         player0 = new Player(); // == team 0
         player1 = new Player(); // == team 1
+        teams[0] = new HashMap<>();
+        teams[1] = new HashMap<>();
     }
 
     /**
@@ -62,14 +63,14 @@ public class GameManager {
         if(team == 0){
             boolean checkPlayer0Gold = checkGold(player0, character);
             if (checkPlayer0Gold){
-                team0Characters.put(characterCounter,character);
+                teams[0].put(characterCounter,character);
                 player0.reduceGold(character.getCost());
             }
         }
         if (team == 1){
             boolean checkPlayer1Gold = checkGold(player0, character);
             if (checkPlayer1Gold){
-                team1Characters.put(characterCounter, character);
+                teams[1].put(characterCounter, character);
                 player1.reduceGold(character.getCost());
             }
         }
@@ -93,6 +94,9 @@ public class GameManager {
      */
     public void getReward(){
 
+    }
+    public String toString(int team,int id) {
+        return String.format("{\"team\":%s,\"id\":%s,\"pos\":%s}",team,id,teams[team].get(id).getPosition());
     }
     
 }
