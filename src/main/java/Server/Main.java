@@ -1,4 +1,4 @@
-package ageofus;
+package Server;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.websocket.server.WebSocketHandler;
