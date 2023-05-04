@@ -18,7 +18,6 @@ public class EchoSocket {
     private static Set<Session> sessions = new CopyOnWriteArraySet<>();
     private static Set<ClientThread> clientThreads = new CopyOnWriteArraySet<>();
 
-
     @OnWebSocketConnect
     public void onConnect(Session session) { //When client connects to the server
         System.out.println("Client connected: " + session.getRemoteAddress().getAddress()); //Prints out the client ID
@@ -64,6 +63,7 @@ public class EchoSocket {
                 throw new RuntimeException(e);
             }
         }
+
 
         public void run() {
 
