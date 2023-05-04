@@ -1,5 +1,8 @@
 package Server;
 
+import Model.GameManager;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
@@ -17,6 +20,10 @@ public class EchoSocket {
 
     private static Set<Session> sessions = new CopyOnWriteArraySet<>();
     private static Set<ClientThread> clientThreads = new CopyOnWriteArraySet<>();
+
+    private static HashMap<ClientThread, MatchHandler> matches = new HashMap<>();
+    private static HashMap<Session, ClientThread> clients = new HashMap<>();
+
 
     @OnWebSocketConnect
     public void onConnect(Session session) { //When client connects to the server
@@ -40,14 +47,30 @@ public class EchoSocket {
 
     @OnWebSocketMessage
     public void onMessage(String message, Session session) {
-        String msg = String.format("Recived message: %s, From session: %s",message,);
+
+        String msg = String.format("Recived message: %s, From session: %s",message,session);
+
         System.out.println("Received message: " + message);
+        Gson gson = new Gson();
+        try {
+            JsonObject jsonObject = gson.fromJson(message, JsonObject.class);
+            String method = jsonObject.get("method").getAsString();
+
+            if (method.equals("spawn")) {
+                int type = jsonObject.get("type").getAsInt();
+
+                matches.get(session).getGameManager().spawnCharacter(type, clients.get(session).getTeam());
+            }
+
+        } catch (Exception e) { }
     }
 
 
     private class ClientThread extends Thread{
 
         private Session session;
+
+        int team;
 
         public ClientThread(Session session){
             this.session = session; //Assigns a specific session for this client
@@ -64,6 +87,17 @@ public class EchoSocket {
             }
         }
 
+        public Session getSession() {
+            return session;
+        }
+
+        public void setTeam(int team) {
+            this.team = team;
+        }
+
+        public int getTeam() {
+            return team;
+        }
 
         public void run() {
 
@@ -77,6 +111,8 @@ public class EchoSocket {
         ClientThread client1;
         ClientThread client2;
 
+        GameManager gameManager;
+
 
         public MatchHandler(){
             clientArray = clientThreads.toArray(); //Creates a array from the set-list
@@ -87,36 +123,37 @@ public class EchoSocket {
             clientThreads.remove(client1); //Removes the first client in the list
             clientThreads.remove(client2); //Removes the second client in the list
 
+            matches.put(client1, this);
+            matches.put(client2, this);
+
+            clients.put(client1.getSession(), client1);
+            clients.put(client2.getSession(), client2);
+
+            client1.setTeam(0);
+            client2.setTeam(1);
+
             start(); //Start the match thread
+        }
+
+        public GameManager getGameManager() {
+            return gameManager;
+        }
+
+        public void spawnCharacter(String json) {
+            client1.sendJson(json);
+            client2.sendJson(json);
         }
 
         public void run(){
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
             /*
             ArrayList<String> list = new ArrayList<String>();
+
+            gameManager = new GameManager();
+
+            /*ArrayList<String> list = new ArrayList<String>();
+
             list.add("str1");
             list.add("str2");
             list.add("str3");
@@ -152,6 +189,5 @@ public class EchoSocket {
 
              */
         }
-
     }
 }
