@@ -1,9 +1,5 @@
 package Server;
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 1829839f4f5109015e75dd73c70b82c7d2fe86e3
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
@@ -49,7 +45,6 @@ public class EchoSocket {
     }
 
 
-<<<<<<< HEAD
     private class ClientThread extends Thread{
 
         private Session session;
@@ -67,30 +62,6 @@ public class EchoSocket {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-=======
-    private class MatchHandler extends Thread{
-        Object[] sessionArray;
-        Session session1;
-        Session session2;
-        public MatchHandler(){
-            sessionArray = sessions.toArray();
-            session1 = (Session) sessionArray[0];
-            session2 = (Session) sessionArray[1];
-
-            start();
-        }
-        
-        public void run(){
-            System.out.println("Two players have joined, they have started a match");
-            if (session1 != null){
-                System.out.println("Session 1 is connected");
-
-            }
-            if (session2 != null){
-                System.out.println("Session 2 is connected");
-            }
-
->>>>>>> 1829839f4f5109015e75dd73c70b82c7d2fe86e3
         }
 
         public void run() {
