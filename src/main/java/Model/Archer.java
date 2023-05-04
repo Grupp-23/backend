@@ -44,9 +44,12 @@ public class Archer extends Character {
 
     /**
      * Check if the character is alive or not.
+     *
+     * @return
      */
     @Override
-    public void isAlive(){
+    public boolean isAlive(){
+        return false;
     }
 
     /**

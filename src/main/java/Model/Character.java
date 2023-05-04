@@ -26,8 +26,11 @@ public abstract class Character {
 
     /**
      * Method to check if each character played is alive or not
+     *
+     * @return
      */
-    public void isAlive(){
+    public boolean isAlive(){
+        return false;
     }
 
     /**

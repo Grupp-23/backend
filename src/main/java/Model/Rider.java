@@ -28,6 +28,17 @@ public class Rider extends Character {
      */
     @Override
     public void attack(){
+        /*
+        While game is active, the method needs to be run the whole match so that the enemyPOS is updated frequently.
+        But also when a character is alive (Nested while loops might not be good):
+
+        while(gameIsActive && isAlive){
+            *Calculate enemy range and attack*
+            while(enemy is in range){
+                attack
+            }
+        }
+         */
 
         int characterPos = getPosition();
         //int enemyCharacterPos = gameManager.enemyPosition; // Get enemyPos from gameManager or Controller.
@@ -45,15 +56,23 @@ public class Rider extends Character {
      */
     @Override
     public void takeDamage(){
+        /*
+        Probably needs an in parameter so that it knows how much it has taken damage.
+        Then just update the character's health.
+         */
 
+        // this.getHealthPoints() -= incomingDamage();
     }
 
 
     /**
      * Check if the character is alive or not.
+     *
+     * @return
      */
     @Override
-    public void isAlive(){
+    public boolean isAlive(){
+        return this.getHealthPoints()>0;
     }
 
     /**
@@ -62,6 +81,7 @@ public class Rider extends Character {
      */
     @Override
     public int getKillReward(){
+        // Need to add the reward to opponents gold. This method might not need changing if dealt with in gameManager.
         return killedReward;
     }
 
