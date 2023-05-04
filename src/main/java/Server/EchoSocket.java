@@ -16,7 +16,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 public class EchoSocket {
 
     private static Set<Session> sessions = new CopyOnWriteArraySet<>();
-    private static Set<ClientThread> clientThreads = new CopyOnWriteArraySet<>();
+    private static Set<Client> clients = new CopyOnWriteArraySet<>();
 
 
     @OnWebSocketConnect
@@ -25,8 +25,8 @@ public class EchoSocket {
         sessions.add(session); //Adds session to a list
         System.out.println("Amount of connections: "+ sessions.size());
         // ---- Assigning a client -----
-        ClientThread clientThread = new ClientThread(session); //Starting a thread for the client
-        if(clientThreads.size() == 2){ // If there is two clients in the clientThreads list
+        Client clientThread = new Client(session); //Starting a thread for the client
+        if(clients.size() == 2){ // If there is two clients in the clientThreads list
             MatchHandler matchHandler = new MatchHandler(); //Start a match thread
             System.out.println("Clients is placed in match");
         }
@@ -44,47 +44,21 @@ public class EchoSocket {
         System.out.println("Received message: " + message);
     }
 
-
-    private class ClientThread extends Thread{
-
-        private Session session;
-
-        public ClientThread(Session session){
-            this.session = session; //Assigns a specific session for this client
-            clientThreads.add(this); //Adds this client to the client list
-            System.out.println(clientThreads.toString());
-            System.out.println("Client has been assign thread");
-            start(); //starts the clients thread
-        }
-        public void sendJson(String json){
-            try {
-                session.getRemote().sendString(json);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        public void run() {
-
-
-        }
-    }
-
     private class MatchHandler extends Thread{
 
         Object[] clientArray;
-        ClientThread client1;
-        ClientThread client2;
+        Client client1;
+        Client client2;
 
 
         public MatchHandler(){
-            clientArray = clientThreads.toArray(); //Creates a array from the set-list
-            client1 = (ClientThread) clientArray[0]; //assigns the first client in the match
-            client2 = (ClientThread) clientArray[1]; //assigns the second client in the match
+            clientArray = clients.toArray(); //Creates a array from the set-list
+            client1 = (Client) clientArray[0]; //assigns the first client in the match
+            client2 = (Client) clientArray[1]; //assigns the second client in the match
 
             //This part removes the first two clients from the clientList, which lets the other clients in this list to take there place to then be assigned a match.
-            clientThreads.remove(client1); //Removes the first client in the list
-            clientThreads.remove(client2); //Removes the second client in the list
+            clients.remove(client1); //Removes the first client in the list
+            clients.remove(client2); //Removes the second client in the list
 
             start(); //Start the match thread
         }
