@@ -40,7 +40,8 @@ public class EchoSocket {
     }
 
     @OnWebSocketMessage
-    public void onMessage(String message) {
+    public void onMessage(String message, Session session) {
+        String msg = String.format("Recived message: %s, From session: %s",message,);
         System.out.println("Received message: " + message);
     }
 
@@ -90,6 +91,31 @@ public class EchoSocket {
         }
 
         public void run(){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            /*
             ArrayList<String> list = new ArrayList<String>();
             list.add("str1");
             list.add("str2");
@@ -123,6 +149,8 @@ public class EchoSocket {
                     throw new RuntimeException(e);
                 }
             }
+
+             */
         }
 
     }
