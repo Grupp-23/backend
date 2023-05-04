@@ -5,7 +5,7 @@ public class Player {
     private String name;
     private int gold;
     private Base base;
-    private int id;
+    private int id; // team id?
 
     public int getId(){
         return id;
@@ -14,7 +14,7 @@ public class Player {
     /**
      * Method to buy a type of character/unit
      */
-    public void buyUnit(){
+    public void buyUnit(){ // buyCharacter?
 
     }
 
@@ -30,5 +30,7 @@ public class Player {
         return base;
     }
 
-
+    public void reduceGold(int cost){
+        this.gold -= cost;
+    }
 }

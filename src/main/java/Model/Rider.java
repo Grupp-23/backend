@@ -32,12 +32,10 @@ public class Rider extends Character {
         While game is active, the method needs to be run the whole match so that the enemyPOS is updated frequently.
         But also when a character is alive (Nested while loops might not be good):
 
-        while(gameIsActive && isAlive){
-            *Calculate enemy range and attack*
             while(enemy is in range){
                 attack
             }
-        }
+
          */
 
         int characterPos = getPosition();
@@ -72,7 +70,7 @@ public class Rider extends Character {
      */
     @Override
     public boolean isAlive(){
-        return this.getHealthPoints()>0;
+        return this.getHealthPoints() > 0;
     }
 
     /**

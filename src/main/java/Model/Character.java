@@ -6,6 +6,7 @@ public abstract class Character {
     private int position; //Position of a character
     private boolean isAlive; //Status to check if a character is alive
     private int killedReward; //Amount of gold for killing a character
+    private int cost;
 
     public Character(int healthPoints, int position, boolean isAlive){
 
@@ -52,5 +53,9 @@ public abstract class Character {
      */
     public int getPosition() {
         return position;
+    }
+
+    public int getCost() {
+        return cost;
     }
 }
