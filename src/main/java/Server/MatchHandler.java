@@ -9,6 +9,11 @@ public class MatchHandler extends Thread {
     private Client client1;
 
     public MatchHandler(Client client0, Client client1){
+        String json1 = "found";
+
+        client0.sendJson(json1);
+        client1.sendJson(json1);
+
         this.client0 = client0;
         this.client1 = client1;
 
