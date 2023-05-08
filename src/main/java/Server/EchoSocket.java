@@ -1,5 +1,6 @@
 package Server;
 
+import org.eclipse.jetty.util.ajax.JSON;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
@@ -51,7 +52,7 @@ public class EchoSocket {
     @OnWebSocketMessage
     public void onMessage(String message, Session session) {
 
-
+        
 
         System.out.println("Received message: " + message);
     }
