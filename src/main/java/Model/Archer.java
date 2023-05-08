@@ -11,7 +11,7 @@ public class Archer extends Character {
     private final int cost = 25; // Cost 25 gold (in-game currency).
     private final int damage = 30; // Each hit does 30 damage to opponent character.
     private final int attackRange = 50; // Assumed 50 pixels range
-    private int speed;
+
 
     /**
      * Instantiates the health, position (where on the map the character is) and
@@ -20,7 +20,7 @@ public class Archer extends Character {
      * @param position Where it is located.
      * @param isAlive if it is alive or not.
      */
-    public Archer(int healthPoints, int position, boolean isAlive, int speed) {
+    public Archer(int healthPoints, double position, boolean isAlive, double speed) {
         super(1,healthPoints, position, speed, isAlive);
     }
 

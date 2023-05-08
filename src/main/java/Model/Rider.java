@@ -11,7 +11,7 @@ public class Rider extends Character {
     private final int cost = 75; // Cost 75 gold (in-game currency).
     private final int damage = 50; // Each hit does 50 damage to opponent character.
     private final int attackRange = 20; // Assumed 20 pixels range
-    private int speed; // Assumed 20 pixels range
+
 
     /**
      * Instantiates the health, position (where on the map the character is) and
@@ -20,7 +20,7 @@ public class Rider extends Character {
      * @param position Where it is located.
      * @param isAlive if it is alive or not.
      */
-    public Rider(int healthPoints, int position, boolean isAlive, int speed) {
+    public Rider(int healthPoints, double position, boolean isAlive, double speed) {
         super(1,healthPoints, position, speed, isAlive);
     }
 
@@ -39,7 +39,7 @@ public class Rider extends Character {
 
          */
 
-        int characterPos = getPosition();
+        double characterPos = getPosition();
         //int enemyCharacterPos = gameManager.enemyPosition; // Get enemyPos from gameManager or Controller.
 
         //int distance = Math.abs(characterPos - enemyCharacterPos);

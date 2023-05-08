@@ -3,16 +3,16 @@ package Model;
 public abstract class Character {
 
     private int healthPoints; //Health of a character
-    private int position; //Position of a character
+    private double position; //Position of a character
     private boolean isAlive; //Status to check if a character is alive
     private int killedReward; //Amount of gold for killing a character
 
-    private int speed; // The speed of a character
+    private double speed; // The speed of a character
     private int cost;
 
     private int characterId;
 
-    public Character(int characterId,int healthPoints, int position,int speed, boolean isAlive){
+    public Character(int characterId,int healthPoints, double position,double speed, boolean isAlive){
 
         this.characterId = characterId;
         this.healthPoints = healthPoints;
@@ -57,11 +57,11 @@ public abstract class Character {
     /**
      * Method to get position of each played character.
      */
-    public int getPosition() {
+    public double getPosition() {
         return position;
     }
 
-    public void updatePosition(int speed) {
+    public void updatePosition(double speed) {
         this.position = position+speed;
     }
 
@@ -77,7 +77,7 @@ public abstract class Character {
         return characterId;
     }
 
-    public int getSpeed() {
+    public double getSpeed() {
         return speed;
     }
 }

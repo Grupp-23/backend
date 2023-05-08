@@ -43,7 +43,7 @@ public class GameManager {
 
             team0Characters.get(key).updatePosition(team0Characters.get(key).getSpeed());
             JsonObject obj = new JsonObject();
-            obj.addProperty("team", "0");
+            obj.addProperty("team", 0);
             obj.addProperty("id",key);
             obj.addProperty("pos",team0Characters.get(key).getPosition());
             jsonArray.add(obj);
@@ -55,7 +55,7 @@ public class GameManager {
 
             team1Characters.get(key).updatePosition(team1Characters.get(key).getSpeed());
             JsonObject obj = new JsonObject();
-            obj.addProperty("team", "1");
+            obj.addProperty("team", 1);
             obj.addProperty("id",key);
             obj.addProperty("pos",team1Characters.get(key).getPosition());
             jsonArray.add(obj);
@@ -88,7 +88,8 @@ public class GameManager {
 
     }
 
-    public boolean spawnCharacter(int characterType, int team){ // CharacterType= the type of character played. Synchronized?
+    public int[] spawnCharacter(int characterType, int team){ // CharacterType= the type of character played. Synchronized?
+        characterCounter++;
         System.out.println("Spawning character");
         Character character = null;
         switch(characterType){
@@ -127,9 +128,9 @@ public class GameManager {
         }
 
 
-        //characterCounter++;
 
-        return true;
+
+        return new int[]{characterCounter,1};
     }
 
     public void removeCharacter(){
