@@ -57,6 +57,9 @@ public class EchoSocket {
     @OnWebSocketClose
     public void onClose(Session session, int statusCode, String reason) {
         System.out.println("Connection closed with statusCode=" + statusCode + ", reason=" + reason);
+        if(sessions.contains(session)){
+            sessions.remove(session);
+        }
 
     }
 

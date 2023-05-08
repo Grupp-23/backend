@@ -52,6 +52,7 @@ public class GameManager {
         switch(characterType){
             case 1:
                 System.out.println("Spawning Melee character");
+
                 character = new Melee(100, 0,true);
                 break;
             case 2:
@@ -68,7 +69,7 @@ public class GameManager {
             System.out.println("Team 0 has been selected");
             boolean checkPlayer0Gold = checkGold(player0, character);
             if (checkPlayer0Gold){
-
+                System.out.println("Player-0 have this amount: "+player0.getGold());
                 team0Characters.put(characterCounter,character);
                 player0.reduceGold(character.getCost());
             }
@@ -77,6 +78,7 @@ public class GameManager {
             System.out.println("Team 1 has been selected");
             boolean checkPlayer1Gold = checkGold(player0, character);
             if (checkPlayer1Gold){
+                System.out.println("Player-1 have this amount: "+player1.getGold());
                 team1Characters.put(characterCounter, character);
                 player1.reduceGold(character.getCost());
             }
