@@ -1,6 +1,7 @@
 package Server;
 
 import Model.GameManager;
+import com.google.gson.Gson;
 
 public class MatchHandler extends Thread {
 
@@ -32,6 +33,10 @@ public class MatchHandler extends Thread {
     }
     public void setCharacterPosition(){
         gameManager.setCharacterPosition();
+
+        Gson gson = new Gson();
+        gson.
+
     }
 
 

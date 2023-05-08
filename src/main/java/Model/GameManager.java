@@ -1,5 +1,6 @@
 package Model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class GameManager {
@@ -9,6 +10,7 @@ public class GameManager {
     private boolean gameWinner;
     private HashMap<Integer, Character> team0Characters = new HashMap<>();
     private HashMap<Integer, Character> team1Characters = new HashMap<>();
+
     private int characterCounter = 0;
     private Player player0;
     private Player player1;
@@ -28,18 +30,26 @@ public class GameManager {
         gameWinner = true;
     }
 
-    public void updateGameState(){
+    public ArrayList<String> updateGameState(){
+        ArrayList<String> jsonBorn = new ArrayList<>();
+
 
         for (int key:team0Characters.keySet()
              ) {
                 team0Characters.get(key).updatePosition(team0Characters.get(key).getSpeed());
+                jsonBorn.add("{ \"method\": \"update\",\"type\":"+team0Characters.get(key)+",\"team\":"+0+",\"id\":"+key+",\"pos\":"+team0Characters.get(key).getPosition()+"}");
+
+
 
         }
         for (int key:team1Characters.keySet()
              ) {
             team1Characters.get(key).updatePosition(team1Characters.get(key).getSpeed());
-
+            jsonBorn.add("{ \"method\": \"update\",\"type\":"+team1Characters.get(key)+",\"team\":"+1+",\"id\":"+key+",\"pos\":"+team1Characters.get(key).getPosition()+"}");
         }
+
+        return jsonBorn;
+
 
 
     }
