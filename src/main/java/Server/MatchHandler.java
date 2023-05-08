@@ -29,8 +29,8 @@ public class MatchHandler extends Thread {
     public void spawnCharacter(Client client, int character){
         boolean spawnChar = gameManager.spawnCharacter(character, client.getTeam());
         if (spawnChar){
-            client0.sendJson("{ \"method\": \"spawn\",\"type\":"+character+",\"team\":"+client.getTeam()+",\"id\":1}");
-            client1.sendJson("{ \"method\": \"spawn\",\"type\":"+character+",\"team\":"+client.getTeam()+",\"id\":1}");
+            client0.sendJson("{ \"method\": \"spawn\",\"type\":"+character+",\"team\":"+client.getTeam()+",\"id\":0}");
+            client1.sendJson("{ \"method\": \"spawn\",\"type\":"+character+",\"team\":"+client.getTeam()+",\"id\":0}");
         }
     }
     public void setCharacterPosition(){
@@ -57,6 +57,11 @@ public class MatchHandler extends Thread {
 
         while (true){
             setCharacterPosition();
+            try {
+                sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
 
     }
