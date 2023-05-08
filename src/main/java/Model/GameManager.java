@@ -72,13 +72,13 @@ public class GameManager {
             case 1:
                 System.out.println("Spawning Melee character");
 
-                character = new Melee(100, 0,true);
+                character = new Melee(100, 0,true,2);
                 break;
             case 2:
-                character = new Archer(100, 0, true);
+                character = new Archer(100, 0, true,1);
                 break;
             case 3:
-                character = new Rider(100, 0, true);
+                character = new Rider(100, 0, true,1);
                 break;
         }
         System.out.println("Are you cont after the swtich?");

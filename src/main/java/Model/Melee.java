@@ -11,6 +11,7 @@ public class Melee extends Character {
     private final int cost = 15; // Cost 15 gold (in-game currency).
     private final int damage = 20; // Each hit does 20 damage to opponent character.
     private final int attackRange = 10; // Assumed 10 pixels range
+    private int speed;
 
     /**
      * Instantiates the health, position (where on the map the character is) and
@@ -19,8 +20,8 @@ public class Melee extends Character {
      * @param position Where it is located.
      * @param isAlive if it is alive or not.
      */
-    public Melee(int healthPoints, int position, boolean isAlive) {
-        super(1,healthPoints, position, isAlive);
+    public Melee(int healthPoints, int position, boolean isAlive, int speed) {
+        super(1,healthPoints, position, speed, isAlive);
     }
 
     /**
