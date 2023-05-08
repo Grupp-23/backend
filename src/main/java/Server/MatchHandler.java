@@ -21,8 +21,8 @@ public class MatchHandler extends Thread {
     public void spawnCharacter(Client client, int character){
         boolean spawnChar = gameManager.spawnCharacter(character, client.getTeam());
         if (spawnChar){
-            client0.sendJson("");
-            client1.sendJson("");
+            client0.sendJson("{ \"method\": \"spawn\",\"type\":"+character+",\"team\":"+client.getTeam()+",\"id\":1}");
+            client1.sendJson("{ \"method\": \"spawn\",\"type\":"+character+",\"team\":"+client.getTeam()+",\"id\":1}");
         }
     }
 
