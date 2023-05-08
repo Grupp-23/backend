@@ -30,8 +30,8 @@ public class MatchHandler extends Thread {
             client1.sendJson("{ \"method\": \"spawn\",\"type\":"+character+",\"team\":"+client.getTeam()+",\"id\":1}");
         }
     }
-    public void setCharacterPosition(Client client, int character){
-
+    public void setCharacterPosition(){
+        gameManager.setCharacterPosition();
     }
 
 
@@ -39,6 +39,10 @@ public class MatchHandler extends Thread {
     public void run() {
         gameManager = new GameManager();
         gameManager.startGame();
+
+        while (true){
+            setCharacterPosition();
+        }
 
     }
 }
