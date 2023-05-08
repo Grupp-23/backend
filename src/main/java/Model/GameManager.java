@@ -29,13 +29,31 @@ public class GameManager {
     }
 
     public void updateGameState(){
-        //få info från gameState i matchtråden
+
+        for (int key:team0Characters.keySet()
+             ) {
+                team0Characters.get(key).updatePosition(team0Characters.get(key).getSpeed());
+
+        }
+        for (int key:team1Characters.keySet()
+             ) {
+
+        }
+
+
     }
 
     /**
      * Gets position of character from gameThread
      */
     public void getPosition(){ // of what?
+
+    }
+
+    /**
+     * Set the position for charachter
+     */
+    public void setCharacterPosition(){
 
     }
 

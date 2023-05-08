@@ -6,15 +6,18 @@ public abstract class Character {
     private int position; //Position of a character
     private boolean isAlive; //Status to check if a character is alive
     private int killedReward; //Amount of gold for killing a character
+
+    private int speed; // The speed of a character
     private int cost;
 
     private int characterId;
 
-    public Character(int characterId,int healthPoints, int position, boolean isAlive){
+    public Character(int characterId,int healthPoints, int position,int speed, boolean isAlive){
 
         this.characterId = characterId;
         this.healthPoints = healthPoints;
         this.position = position;
+        this.speed = speed;
         this.isAlive = isAlive;
     }
 
@@ -58,11 +61,23 @@ public abstract class Character {
         return position;
     }
 
+    public void updatePosition(int speed) {
+        this.position = position+speed;
+    }
+
     public int getCost() {
         return cost;
     }
 
+    public void setCost(int cost) {
+        this.cost = cost;
+    }
+
     public int getCharacterId() {
         return characterId;
+    }
+
+    public int getSpeed() {
+        return speed;
     }
 }
