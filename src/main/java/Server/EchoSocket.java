@@ -69,7 +69,7 @@ public class EchoSocket {
             if (method.equals("spawn")) {
                 int type = jsonObject.get("type").getAsInt();
 
-                matches.get(session).getGameManager().spawnCharacter(type, clients.get(session).getTeam());
+                matches.get(session).spawnCharacter(clients.get(session), type);
             }
 
         } catch (Exception e) { }

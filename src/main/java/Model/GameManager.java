@@ -46,7 +46,7 @@ public class GameManager {
 
     }
 
-    public void spawnCharacter(int characterType, int team){ // CharacterType= the type of character played. Synchronized?
+    public boolean spawnCharacter(int characterType, int team){ // CharacterType= the type of character played. Synchronized?
         Character character = null;
         switch(characterType){
             case 1:
@@ -74,6 +74,7 @@ public class GameManager {
             }
         }
         characterCounter++;
+        return true;
     }
 
     public void removeCharacter(){
