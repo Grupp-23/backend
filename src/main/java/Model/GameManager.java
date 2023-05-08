@@ -14,7 +14,7 @@ public class GameManager {
     private HashMap<Integer, Character> team0Characters = new HashMap<>();
     private HashMap<Integer, Character> team1Characters = new HashMap<>();
 
-    private int characterCounter = 0;
+    private int characterCounter = 1;
     private Player player0;
     private Player player1;
 
@@ -127,7 +127,7 @@ public class GameManager {
         }
 
 
-        characterCounter++;
+        //characterCounter++;
 
         return true;
     }
