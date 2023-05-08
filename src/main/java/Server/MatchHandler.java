@@ -32,10 +32,12 @@ public class MatchHandler extends Thread {
         }
     }
     public void setCharacterPosition(){
-        gameManager.setCharacterPosition();
+
 
         Gson gson = new Gson();
-        gson.
+        String jsonString = gson.toJson(gameManager.updateGameState());
+        client0.sendJson(jsonString);
+        client1.sendJson(jsonString);
 
     }
 
