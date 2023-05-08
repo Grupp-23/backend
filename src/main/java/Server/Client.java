@@ -7,10 +7,19 @@ import java.io.IOException;
 public class Client {
 
     private Session session;
-
+    private int team;
     public Client(Session session){
         this.session = session; //Assigns a specific session for this client
     }
+
+    public void setTeam(int team) {
+        this.team = team;
+    }
+    public int getTeam() {
+        return team;
+    }
+
+
 
     public void sendJson(String json){
         try {

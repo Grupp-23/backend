@@ -31,12 +31,16 @@ public class EchoSocket {
         System.out.println("Amount of connections: "+ sessions.size());
         // ---- Assigning a client -----
         if(sessions.size() >= 2){ // If there is two clients in the clientThreads list
-            MatchHandler matchHandler = new MatchHandler(); //Start a match thread
+            Client client0 = new Client(sessions.get(0));
+            Client client1 = new Client(sessions.get(1));
+
+            MatchHandler matchHandler = new MatchHandler(client0,client1); //Start a match thread
             matches.put((Client) sessions.get(1), matchHandler);
             matches.put((Client) sessions.get(0), matchHandler);
 
-            clients.put(sessions.get(1), new Client(sessions.get(1)));
-            clients.put(sessions.get(0), new Client(sessions.get(0)));
+            clients.put(sessions.get(1), client1);
+            clients.put(sessions.get(0), client0);
+
 
             sessions.remove(1);
             sessions.remove(0);
