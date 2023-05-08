@@ -1,5 +1,7 @@
 package Server;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import org.eclipse.jetty.util.ajax.JSON;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
@@ -52,6 +54,21 @@ public class EchoSocket {
     @OnWebSocketMessage
     public void onMessage(String message, Session session) {
 
+        String msg = String.format("Recived message: %s, From session: %s",message,session);
+
+        System.out.println("Received message: " + message);
+        Gson gson = new Gson();
+        try {
+            JsonObject jsonObject = gson.fromJson(message, JsonObject.class);
+            String method = jsonObject.get("method").getAsString();
+
+            if (method.equals("spawn")) {
+                int type = jsonObject.get("type").getAsInt();
+
+                matches.get(session).getGameManager().spawnCharacter(type, clients.get(session).getTeam());
+            }
+
+        } catch (Exception e) { }
         
 
         System.out.println("Received message: " + message);
