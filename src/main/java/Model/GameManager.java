@@ -37,6 +37,7 @@ public class GameManager {
         }
         for (int key:team1Characters.keySet()
              ) {
+            team1Characters.get(key).updatePosition(team1Characters.get(key).getSpeed());
 
         }
 
