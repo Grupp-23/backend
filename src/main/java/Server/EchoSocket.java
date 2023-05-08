@@ -56,10 +56,10 @@ public class EchoSocket {
     }
 
     @OnWebSocketMessage
-    public void onMessage(String message) {
+    public void onMessage(Session session, String message) {
 
-        String msg = String.format("Recived message: %s",message);
-        //String msg = String.format("Recived message: %s, From session: %s",message,session);
+        //String msg = String.format("Recived message: %s",message);
+        String msg = String.format("Recived message: %s, From session: %s",message,session);
         System.out.println("Received message: " + message);
         Gson gson = new Gson();
         try {
@@ -69,7 +69,7 @@ public class EchoSocket {
             if (method.equals("spawn")) {
                 int type = jsonObject.get("type").getAsInt();
 
-                //matches.get(session).spawnCharacter(clients.get(session), type);
+                matches.get(session).spawnCharacter(clients.get(session), type);
             }
 
         } catch (Exception e) { }
