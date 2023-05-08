@@ -19,6 +19,11 @@ public class Client {
         return team;
     }
 
+    public int getId(){
+
+        return 0;
+    }
+
 
 
     public void sendJson(String json){

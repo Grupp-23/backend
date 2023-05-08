@@ -47,9 +47,11 @@ public class GameManager {
     }
 
     public boolean spawnCharacter(int characterType, int team){ // CharacterType= the type of character played. Synchronized?
+        System.out.println("Spawning character");
         Character character = null;
         switch(characterType){
             case 1:
+                System.out.println("Spawning Melee character");
                 character = new Melee(100, 0,true);
                 break;
             case 2:

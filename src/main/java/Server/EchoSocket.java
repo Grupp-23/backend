@@ -21,13 +21,18 @@ public class EchoSocket {
     private static ArrayList<Session> sessions = new ArrayList<Session>();
 
     private static HashMap<Client, MatchHandler> matches = new HashMap<>();
-    private static HashMap<Session, Client> clients = new HashMap<>();
+    private static HashMap<String, Client> clients = new HashMap<>();
+
+
 
 
     @OnWebSocketConnect
     public void onConnect(Session session) { //When client connects to the server
         System.out.println("Client connected: " + session.getRemoteAddress().getAddress()); //Prints out the client ID
+
         sessions.add(session); //Adds session to a list
+        System.out.println("Session Socket: "+session.getRemote().getInetSocketAddress());
+
         System.out.println("Amount of connections: "+ sessions.size());
         // ---- Assigning a client -----
         if(sessions.size() >= 2){ // If there is two clients in the clientThreads list
@@ -38,8 +43,8 @@ public class EchoSocket {
             matches.put(client1, matchHandler);
             matches.put(client0, matchHandler);
 
-            clients.put(sessions.get(1), client1);
-            clients.put(sessions.get(0), client0);
+            clients.put(String.valueOf(sessions.get(1).getRemote().getInetSocketAddress()), client1);
+            clients.put(String.valueOf(sessions.get(0).getRemote().getInetSocketAddress()), client0);
 
 
             sessions.remove(1);
@@ -60,21 +65,21 @@ public class EchoSocket {
 
         //String msg = String.format("Recived message: %s",message);
         String msg = String.format("Recived message: %s, From session: %s",message,session);
-        System.out.println("Received message: " + message);
+        System.out.println(msg);
         Gson gson = new Gson();
         try {
+            System.out.println("Try to spawn character");
             JsonObject jsonObject = gson.fromJson(message, JsonObject.class);
             String method = jsonObject.get("method").getAsString();
 
             if (method.equals("spawn")) {
+                System.out.println("Clicked to spawn character");
                 int type = jsonObject.get("type").getAsInt();
-
-                matches.get(session).spawnCharacter(clients.get(session), type);
+                //matches.get(session).spawnCharacter(clients.get(session), type);
+                matches.get(clients.get(String.valueOf(session.getRemote().getInetSocketAddress()))).spawnCharacter(clients.get(String.valueOf(session.getRemote().getInetSocketAddress())),type);
             }
 
         } catch (Exception e) { }
-        
 
-        System.out.println("Received message: " + message);
     }
 }
