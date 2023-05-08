@@ -3,7 +3,7 @@ package Model;
 public class Player {
 
     private String name;
-    private int gold;
+    private int gold = 200;
     private Base base;
     private int id; // team id?
 

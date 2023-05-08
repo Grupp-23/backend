@@ -68,12 +68,10 @@ public class EchoSocket {
         System.out.println(msg);
         Gson gson = new Gson();
         try {
-            System.out.println("Try to spawn character");
             JsonObject jsonObject = gson.fromJson(message, JsonObject.class);
             String method = jsonObject.get("method").getAsString();
 
             if (method.equals("spawn")) {
-                System.out.println("Clicked to spawn character");
                 int type = jsonObject.get("type").getAsInt();
                 //matches.get(session).spawnCharacter(clients.get(session), type);
                 matches.get(clients.get(String.valueOf(session.getRemote().getInetSocketAddress()))).spawnCharacter(clients.get(String.valueOf(session.getRemote().getInetSocketAddress())),type);

@@ -61,21 +61,30 @@ public class GameManager {
                 character = new Rider(100, 0, true);
                 break;
         }
+        System.out.println("Are you cont after the swtich?");
+
+
         if(team == 0){
+            System.out.println("Team 0 has been selected");
             boolean checkPlayer0Gold = checkGold(player0, character);
             if (checkPlayer0Gold){
+
                 team0Characters.put(characterCounter,character);
                 player0.reduceGold(character.getCost());
             }
         }
         if (team == 1){
+            System.out.println("Team 1 has been selected");
             boolean checkPlayer1Gold = checkGold(player0, character);
             if (checkPlayer1Gold){
                 team1Characters.put(characterCounter, character);
                 player1.reduceGold(character.getCost());
             }
         }
+
+
         characterCounter++;
+
         return true;
     }
 

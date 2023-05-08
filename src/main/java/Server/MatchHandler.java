@@ -35,9 +35,6 @@ public class MatchHandler extends Thread {
 
     public void run() {
         gameManager = new GameManager();
-
-
-
-
+        gameManager.startGame();
     }
 }
