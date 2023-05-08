@@ -8,8 +8,11 @@ public abstract class Character {
     private int killedReward; //Amount of gold for killing a character
     private int cost;
 
-    public Character(int healthPoints, int position, boolean isAlive){
+    private int characterId;
 
+    public Character(int characterId,int healthPoints, int position, boolean isAlive){
+
+        this.characterId = characterId;
         this.healthPoints = healthPoints;
         this.position = position;
         this.isAlive = isAlive;
@@ -57,5 +60,9 @@ public abstract class Character {
 
     public int getCost() {
         return cost;
+    }
+
+    public int getCharacterId() {
+        return characterId;
     }
 }
