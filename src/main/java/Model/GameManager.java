@@ -1,5 +1,8 @@
 package Model;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -30,25 +33,35 @@ public class GameManager {
         gameWinner = true;
     }
 
-    public ArrayList<String> updateGameState(){
-        ArrayList<String> jsonBorn = new ArrayList<>();
+    public JsonArray updateGameState(){
+
+        JsonArray jsonArray = new JsonArray();
 
 
-        for (int key:team0Characters.keySet()
-             ) {
-                team0Characters.get(key).updatePosition(team0Characters.get(key).getSpeed());
-                jsonBorn.add("{ \"method\": \"update\",\"type\":"+team0Characters.get(key)+",\"team\":"+0+",\"id\":"+key+",\"pos\":"+team0Characters.get(key).getPosition()+"}");
+
+        for (int key:team0Characters.keySet()) {
+
+            team0Characters.get(key).updatePosition(team0Characters.get(key).getSpeed());
+            JsonObject obj = new JsonObject();
+            obj.addProperty("team", "0");
+            obj.addProperty("id",key);
+            obj.addProperty("pos",team0Characters.get(key).getPosition());
+            jsonArray.add(obj);
 
 
 
         }
-        for (int key:team1Characters.keySet()
-             ) {
+        for (int key:team1Characters.keySet()) {
+
             team1Characters.get(key).updatePosition(team1Characters.get(key).getSpeed());
-            jsonBorn.add("{ \"method\": \"update\",\"type\":"+team1Characters.get(key)+",\"team\":"+1+",\"id\":"+key+",\"pos\":"+team1Characters.get(key).getPosition()+"}");
+            JsonObject obj = new JsonObject();
+            obj.addProperty("team", "1");
+            obj.addProperty("id",key);
+            obj.addProperty("pos",team1Characters.get(key).getPosition());
+            jsonArray.add(obj);
         }
 
-        return jsonBorn;
+        return jsonArray;
 
 
 

@@ -2,6 +2,8 @@ package Server;
 
 import Model.GameManager;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 public class MatchHandler extends Thread {
 
@@ -33,11 +35,17 @@ public class MatchHandler extends Thread {
     }
     public void setCharacterPosition(){
 
+        JsonObject obj = new JsonObject();
+        obj.addProperty("method", "update");
+
+        JsonArray array = gameManager.updateGameState();
+        obj.add("game", array);
 
         Gson gson = new Gson();
-        String jsonString = gson.toJson(gameManager.updateGameState());
-        client0.sendJson(jsonString);
-        client1.sendJson(jsonString);
+        String json = gson.toJson(obj);
+        System.out.println(json);
+        client0.sendJson(json);
+        client1.sendJson(json);
 
     }
 
