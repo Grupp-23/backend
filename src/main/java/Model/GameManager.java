@@ -4,13 +4,14 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class GameManager {
 
     private boolean gameWinner;
-    private HashMap<Integer, Character> team0Characters = new HashMap<>();
-    private HashMap<Integer, Character> team1Characters = new HashMap<>();
+    private ArrayList<Character> team0Characters = new ArrayList<>();
+    private ArrayList<Character> team1Characters = new ArrayList<>();
     private int characterCounter = 1;
     private Player player0;
     private Player player1;
@@ -36,25 +37,25 @@ public class GameManager {
         JsonArray jsonArray = new JsonArray();
 
 
+        for (int i = 0; i < team0Characters.size(); i++) {
 
-        for (int key:team0Characters.keySet()) {
-
-            team0Characters.get(key).updatePosition(team0Characters.get(key).getSpeed(),1);
+            team0Characters.get(i).updatePosition(team0Characters.get(i).getSpeed(),1);
             JsonObject obj = new JsonObject();
             obj.addProperty("team", 0);
-            obj.addProperty("id",key);
-            obj.addProperty("pos",team0Characters.get(key).getPosition());
+            obj.addProperty("id",team0Characters.get(i).getCharacterId());
+            obj.addProperty("pos",team0Characters.get(i).getPosition());
             jsonArray.add(obj);
+
 
         }
 
-        for (int key:team1Characters.keySet()) {
+        for (int i = 0; i < team1Characters.size(); i++) {
 
-            team1Characters.get(key).updatePosition(team1Characters.get(key).getSpeed(),(-1));
+            team1Characters.get(i).updatePosition(team1Characters.get(i).getSpeed(),(-1));
             JsonObject obj = new JsonObject();
             obj.addProperty("team", 1);
-            obj.addProperty("id",key);
-            obj.addProperty("pos",team1Characters.get(key).getPosition());
+            obj.addProperty("id",team1Characters.get(i).getCharacterId());
+            obj.addProperty("pos",team1Characters.get(i).getPosition());
             jsonArray.add(obj);
         }
 
@@ -109,7 +110,7 @@ public class GameManager {
             boolean checkPlayer0Gold = checkGold(player0, character);
             if (checkPlayer0Gold){
                 System.out.println("Player-0 have this amount: "+player0.getGold());
-                team0Characters.put(characterCounter,character);
+                team0Characters.add(character);
                 player0.reduceGold(character.getCost());
             }
         }
@@ -118,7 +119,7 @@ public class GameManager {
             boolean checkPlayer1Gold = checkGold(player0, character);
             if (checkPlayer1Gold){
                 System.out.println("Player-1 have this amount: "+player1.getGold());
-                team1Characters.put(characterCounter, character);
+                team1Characters.add(character);
                 player1.reduceGold(character.getCost());
             }
         }
