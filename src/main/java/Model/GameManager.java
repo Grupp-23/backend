@@ -22,7 +22,7 @@ public class GameManager {
     }
 
     /**
-     * Ends game when client disconects or the base of one client/player is destoryed.
+     * Ends game when client disconnects or the base of one client/player is destroyed.
      */
     public void endGame(){
         gameWinner = true;
@@ -40,7 +40,7 @@ public class GameManager {
     }
 
     /**
-     * Gets health of base and if base is destoryed or not
+     * Gets health of base and if base is destroyed or not
      */
     public void getBaseStatus(){
 
@@ -76,8 +76,15 @@ public class GameManager {
         characterCounter++;
     }
 
-    public void removeCharacter(){
+    public void removeCharacter(int characterType, int team) {
+        Character character = null;
+        if(team == 0){
+            team0Characters.remove(0,characterType);
+        }
 
+        if(team == 1){
+            team1Characters.remove(0,characterType);
+        }
     }
 
     /**
@@ -92,7 +99,7 @@ public class GameManager {
      * Sends gold for characters killed to the player that killed them.
      */
     public void getReward(){
-
+        
     }
     
 }
