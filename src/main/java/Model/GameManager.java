@@ -76,15 +76,8 @@ public class GameManager {
         characterCounter++;
     }
 
-    public void removeCharacter(int characterType, int team) {
-        Character character = null;
-        if(team == 0){
-            team0Characters.remove(0,characterType);
-        }
+    public void removeCharacter() {
 
-        if(team == 1){
-            team1Characters.remove(0,characterType);
-        }
     }
 
     /**
@@ -99,7 +92,7 @@ public class GameManager {
      * Sends gold for characters killed to the player that killed them.
      */
     public void getReward(){
-        
+
     }
     
 }
