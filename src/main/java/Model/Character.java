@@ -61,8 +61,8 @@ public abstract class Character {
         return position;
     }
 
-    public void updatePosition(double speed) {
-        this.position = position+speed;
+    public void updatePosition(double speed, int direction) {
+        this.position = position+(speed*direction);
     }
 
     public int getCost() {

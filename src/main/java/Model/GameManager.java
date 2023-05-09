@@ -41,7 +41,7 @@ public class GameManager {
 
         for (int key:team0Characters.keySet()) {
 
-            team0Characters.get(key).updatePosition(team0Characters.get(key).getSpeed());
+            team0Characters.get(key).updatePosition(team0Characters.get(key).getSpeed(),1);
             JsonObject obj = new JsonObject();
             obj.addProperty("team", 0);
             obj.addProperty("id",key);
@@ -53,7 +53,7 @@ public class GameManager {
         }
         for (int key:team1Characters.keySet()) {
 
-            team1Characters.get(key).updatePosition(team1Characters.get(key).getSpeed());
+            team1Characters.get(key).updatePosition(team1Characters.get(key).getSpeed(),(-1));
             JsonObject obj = new JsonObject();
             obj.addProperty("team", 1);
             obj.addProperty("id",key);
@@ -95,14 +95,13 @@ public class GameManager {
         switch(characterType){
             case 1:
                 System.out.println("Spawning Melee character");
-
-                character = new Melee(100, 0,true,2);
+                character = new Melee(100, (team*100),true,0.07);
                 break;
             case 2:
-                character = new Archer(100, 0, true,1);
+                character = new Archer(75, (team*100), true,0.07);
                 break;
             case 3:
-                character = new Rider(100, 0, true,1);
+                character = new Rider(300, (team*100), true,0.02);
                 break;
         }
         System.out.println("Are you cont after the swtich?");
