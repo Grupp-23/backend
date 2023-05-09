@@ -39,6 +39,14 @@ public class GameManager {
 
         for (int i = 0; i < team0Characters.size(); i++) {
 
+            if (team0Characters.get(i).getPosition() >= 87){
+                continue;
+            }
+            if(i >= 1){
+                if(team0Characters.get(i).getPosition() >= team0Characters.get(i-1).getPosition()-3){
+                    continue;
+                }
+            }
             team0Characters.get(i).updatePosition(team0Characters.get(i).getSpeed(),1);
             JsonObject obj = new JsonObject();
             obj.addProperty("team", 0);
@@ -50,7 +58,14 @@ public class GameManager {
         }
 
         for (int i = 0; i < team1Characters.size(); i++) {
-
+            if (team1Characters.get(i).getPosition() <= 10){
+                continue;
+            }
+            if(i >= 1){
+                if(team1Characters.get(i).getPosition() <= team1Characters.get(i-1).getPosition()+3){
+                    continue;
+                }
+            }
             team1Characters.get(i).updatePosition(team1Characters.get(i).getSpeed(),(-1));
             JsonObject obj = new JsonObject();
             obj.addProperty("team", 1);
@@ -93,13 +108,13 @@ public class GameManager {
         switch(characterType){
             case 1:
                 System.out.println("Spawning Melee character");
-                character = new Melee(characterCounter, 100, (team*100),true,0.07);
+                character = new Melee(characterCounter, 100,((team*100)+(5+((-15)*team))),true,0.07);
                 break;
             case 2:
-                character = new Archer(characterCounter,75, (team*100), true,0.07);
+                character = new Archer(characterCounter,75, ((team*100)+(5+((-15)*team))), true,0.07);
                 break;
             case 3:
-                character = new Rider(characterCounter,300, (team*100), true,0.02);
+                character = new Rider(characterCounter,300, ((team*100)+(5+((-15)*team))), true,0.02);
                 break;
         }
         System.out.println("Are you cont after the swtich?");
