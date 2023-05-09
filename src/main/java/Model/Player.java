@@ -33,4 +33,8 @@ public class Player {
     public void reduceGold(int cost){
         this.gold -= cost;
     }
+
+    public void increaseGold(int gold){
+        this.gold += gold;
+    }
 }

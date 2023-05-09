@@ -8,15 +8,13 @@ import java.util.HashMap;
 
 public class GameManager {
 
-    //Lägg in spelarna i en lista (väntar svar på oliver från hans kod)
-
     private boolean gameWinner;
     private HashMap<Integer, Character> team0Characters = new HashMap<>();
     private HashMap<Integer, Character> team1Characters = new HashMap<>();
-
     private int characterCounter = 1;
     private Player player0;
     private Player player1;
+
 
     /**
      * Starts the game when two clients are ready
@@ -48,9 +46,8 @@ public class GameManager {
             obj.addProperty("pos",team0Characters.get(key).getPosition());
             jsonArray.add(obj);
 
-
-
         }
+
         for (int key:team1Characters.keySet()) {
 
             team1Characters.get(key).updatePosition(team1Characters.get(key).getSpeed(),(-1));
@@ -75,14 +72,14 @@ public class GameManager {
     }
 
     /**
-     * Set the position for charachter
+     * Set the position for character
      */
     public void setCharacterPosition(){
 
     }
 
     /**
-     * Gets health of base and if base is destoryed or not
+     * Gets health of base and if base is destroyed or not
      */
     public void getBaseStatus(){
 
@@ -95,13 +92,13 @@ public class GameManager {
         switch(characterType){
             case 1:
                 System.out.println("Spawning Melee character");
-                character = new Melee(100, (team*100),true,0.07);
+                character = new Melee(characterCounter, 100, (team*100),true,0.07);
                 break;
             case 2:
-                character = new Archer(75, (team*100), true,0.07);
+                character = new Archer(characterCounter,75, (team*100), true,0.07);
                 break;
             case 3:
-                character = new Rider(300, (team*100), true,0.02);
+                character = new Rider(characterCounter,300, (team*100), true,0.02);
                 break;
         }
         System.out.println("Are you cont after the swtich?");
@@ -132,8 +129,14 @@ public class GameManager {
         return new int[]{characterCounter,1};
     }
 
-    public void removeCharacter(){
+    public void removeCharacter(int team, int characterId){
+        if(team == 0){
+            team0Characters.remove(characterId);
 
+        }
+        if(team == 1){
+            team1Characters.remove(characterId);
+        }
     }
 
     /**
@@ -147,7 +150,8 @@ public class GameManager {
     /**
      * Sends gold for characters killed to the player that killed them.
      */
-    public void getReward(){
+    public void getReward(Player player, Character character){
+       player.increaseGold(character.getKillReward());
 
     }
     

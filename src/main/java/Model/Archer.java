@@ -20,8 +20,8 @@ public class Archer extends Character {
      * @param position Where it is located.
      * @param isAlive if it is alive or not.
      */
-    public Archer(int healthPoints, double position, boolean isAlive, double speed) {
-        super(1,healthPoints, position, speed, isAlive);
+    public Archer(int characterId, int healthPoints, double position, boolean isAlive, double speed) {
+        super(characterId,healthPoints, position, speed, isAlive);
     }
 
 
