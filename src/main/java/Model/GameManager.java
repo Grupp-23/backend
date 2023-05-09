@@ -47,6 +47,12 @@ public class GameManager {
                     continue;
                 }
             }
+            if(team1Characters.size() > 0){
+                if(team0Characters.get(i).getPosition() >= team1Characters.get(0).getPosition()-3){
+                    continue;
+                }
+            }
+
             team0Characters.get(i).updatePosition(team0Characters.get(i).getSpeed(),1);
             JsonObject obj = new JsonObject();
             obj.addProperty("team", 0);
@@ -66,6 +72,12 @@ public class GameManager {
                     continue;
                 }
             }
+            if(team0Characters.size() > 0){
+                if(team1Characters.get(i).getPosition() <= team0Characters.get(0).getPosition()+3){
+                    continue;
+                }
+            }
+
             team1Characters.get(i).updatePosition(team1Characters.get(i).getSpeed(),(-1));
             JsonObject obj = new JsonObject();
             obj.addProperty("team", 1);
