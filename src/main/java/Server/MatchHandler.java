@@ -106,7 +106,6 @@ public class MatchHandler extends Thread {
 
 
     public void setCharacterPosition(){
-
         JsonObject obj = new JsonObject();
         obj.addProperty("method", "update");
 
@@ -119,6 +118,7 @@ public class MatchHandler extends Thread {
         client0.sendJson(json);
         client1.sendJson(json);
     }
+    public void 
 
 
 
