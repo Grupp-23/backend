@@ -13,19 +13,28 @@ public abstract class Character {
 
     private int characterId;
 
-    public Character(int characterId,int healthPoints, double position,double speed, boolean isAlive){
+    private long lastAttackTime;
+    private long attackSpeed;
+
+    public Character(int characterId,int healthPoints, double position,double speed, boolean isAlive, long attackSpeed){
 
         this.characterId = characterId;
         this.healthPoints = healthPoints;
         this.position = position;
         this.speed = speed;
         this.isAlive = isAlive;
+        this.attackSpeed = attackSpeed;
+    }
+    public boolean canAttack (long currentTime){
+        return currentTime - lastAttackTime >= attackSpeed;
     }
 
     /**
      * Method for each character played to attack
      */
-    public void attack(){}
+    public void attack(long currentTime){
+        lastAttackTime = currentTime;
+    }
 
     /**
      * Method for each character played to take damage
@@ -89,4 +98,5 @@ public abstract class Character {
     public int getDamage(){
         return damage;
     }
+
 }

@@ -19,17 +19,11 @@ public class Melee extends Character {
      * @param position Where it is located.
      * @param isAlive if it is alive or not.
      */
-    public Melee(int characterId, int healthPoints, double position, boolean isAlive, double speed) {
-        super(characterId,healthPoints, position, speed, isAlive);
+    public Melee(int characterId, int healthPoints, double position, boolean isAlive, double speed, long attackSpeed) {
+        super(characterId,healthPoints, position, speed, isAlive, attackSpeed);
     }
 
-    /**
-     * Attack method for attacking an opponent.
-     */
-    @Override
-    public void attack(){
 
-    }
 
     /**
      * Method for updating the character's health,

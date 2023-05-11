@@ -62,14 +62,14 @@ public class MatchHandler extends Thread {
         switch(characterType){
             case 1:
                 System.out.println("Spawning Melee character");
-                character = new Melee(characterCounter, 100,((team*100)+(5+((-15)*team))),true,0.07);
+                character = new Melee(characterCounter, 100,((team*100)+(5+((-15)*team))),true,0.07, 1000);
                 System.out.println(character.toString());
                 break;
             case 2:
-                character = new Archer(characterCounter,75, ((team*100)+(5+((-15)*team))), true,0.07);
+                character = new Archer(characterCounter,75, ((team*100)+(5+((-15)*team))), true,0.07, 1500);
                 break;
             case 3:
-                character = new Rider(characterCounter,300, ((team*100)+(5+((-15)*team))), true,0.02);
+                character = new Rider(characterCounter,300, ((team*100)+(5+((-15)*team))), true,0.02, 2000);
                 break;
         }
 
@@ -118,8 +118,17 @@ public class MatchHandler extends Thread {
         client0.sendJson(json);
         client1.sendJson(json);
     }
-    public void removeCharacter(){
-        
+    public void removeCharacter(int team, int id){
+        JsonObject object = new JsonObject();
+        object.addProperty("method","characterdead");
+        object.addProperty("team",team);
+        object.addProperty("id", id);
+
+
+        Gson gson = new Gson();
+        String json = gson.toJson(object);
+        client0.sendJson(json);
+        client1.sendJson(json);
     }
 
 
@@ -148,7 +157,7 @@ public class MatchHandler extends Thread {
         return player.getGold() >= character.getCost();
     }
 
-    public void removeCharacter(int team, int characterId){
+    public void removeCharacterFromlist(int team, int characterId){
         if(team == 0){
             team0Characters.remove(characterId);
         }
@@ -157,10 +166,15 @@ public class MatchHandler extends Thread {
         }
     }
 
+
     public void attackCharacter(Character characterAlly, Character characterEnemy){
         int allyDamage = characterAlly.getDamage();
+        characterAlly.attack(System.currentTimeMillis());
         characterEnemy.takeDamage(allyDamage);
         System.out.println("Enemey character have: "+ characterEnemy.getHealthPoints()+ "hp");
+    }
+    public void attackBase(Character character, Base base){
+
     }
 
 
@@ -182,10 +196,13 @@ public class MatchHandler extends Thread {
             if(team1Characters.size() > 0){
                 if(team0Characters.get(i).getPosition() >= team1Characters.get(0).getPosition()-3){
 
-                    attackCharacter(team0Characters.get(i),team1Characters.get(0));
+                    if (team0Characters.get(i).canAttack(System.currentTimeMillis())){
+                        attackCharacter(team0Characters.get(i),team1Characters.get(0));
+                    }
 
                     if(team1Characters.get(0).getHealthPoints() <= 0){
-                        team1Characters.remove(0);
+                        removeCharacter(client1.getTeam(), team1Characters.get(0).getCharacterId());
+                        removeCharacterFromlist(1,0);
 
                     }
 
@@ -214,6 +231,17 @@ public class MatchHandler extends Thread {
             }
             if(team0Characters.size() > 0){
                 if(team1Characters.get(i).getPosition() <= team0Characters.get(0).getPosition()+3){
+
+                    if (team1Characters.get(i).canAttack(System.currentTimeMillis())){
+                        attackCharacter(team1Characters.get(i),team0Characters.get(0));
+                    }
+
+                    if(team0Characters.get(0).getHealthPoints() <= 0){
+                        removeCharacter(client0.getTeam(), team0Characters.get(0).getCharacterId());
+                        removeCharacterFromlist(0,0);
+
+                    }
+
                     continue;
                 }
             }

@@ -20,34 +20,11 @@ public class Rider extends Character {
      * @param position Where it is located.
      * @param isAlive if it is alive or not.
      */
-    public Rider(int characterId, int healthPoints, double position, boolean isAlive, double speed) {
-        super(characterId,healthPoints, position, speed, isAlive);
+    public Rider(int characterId, int healthPoints, double position, boolean isAlive, double speed, long attackSpeed) {
+        super(characterId,healthPoints, position, speed, isAlive, attackSpeed);
     }
 
-    /**
-     * Attack method for attacking an opponent.
-     */
-    @Override
-    public void attack(){
-        /*
-        While game is active, the method needs to be run the whole match so that the enemyPOS is updated frequently.
-        But also when a character is alive (Nested while loops might not be good):
 
-            while(enemy is in range){
-                attack
-            }
-
-         */
-
-        double characterPos = getPosition();
-        //int enemyCharacterPos = gameManager.enemyPosition; // Get enemyPos from gameManager or Controller.
-
-        //int distance = Math.abs(characterPos - enemyCharacterPos);
-
-        //while(distance <= attackRange){
-            //controller.attackedOpponent(damage);
-        //}
-    }
 
     /**
      * Method for updating the character's health,
