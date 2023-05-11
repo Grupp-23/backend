@@ -139,6 +139,7 @@ public class GameManager {
                 System.out.println("Player-0 have this amount: "+player0.getGold());
                 team0Characters.add(character);
                 player0.reduceGold(character.getCost());
+                System.out.println("Player-0 have bought a charachter for: "+ character.getCost());
             }
         }
         if (team == 1){
@@ -148,6 +149,7 @@ public class GameManager {
                 System.out.println("Player-1 have this amount: "+player1.getGold());
                 team1Characters.add(character);
                 player1.reduceGold(character.getCost());
+                System.out.println("Player-1 have bought a charachter for: "+ character.getCost());
             }
         }
 

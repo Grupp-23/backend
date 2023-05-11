@@ -44,7 +44,7 @@ public class MatchHandler extends Thread {
 
         Gson gson = new Gson();
         String json = gson.toJson(obj);
-        System.out.println(json);
+        //System.out.println(json);
         client0.sendJson(json);
         client1.sendJson(json);
 
