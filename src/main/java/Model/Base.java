@@ -3,11 +3,14 @@ package Model;
 public class Base {
     private int baseHealthPoints = 1000;
 
-    public void takeDamage(){
-        baseHealthPoints -= 100; // Todo getter till dmg från character
+    public void takeDamage(int damage){
+        baseHealthPoints -= damage;
     }
 
     public boolean isDestroyed(){
         return baseHealthPoints >= 0;
+    }
+    public int getBaseHealthPoints(){
+        return baseHealthPoints;
     }
 }

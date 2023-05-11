@@ -16,7 +16,11 @@ public abstract class Character {
     private long lastAttackTime;
     private long attackSpeed;
 
-    public Character(int characterId,int healthPoints, double position,double speed, boolean isAlive, long attackSpeed){
+
+
+    private long spawnTime;
+
+    public Character(int characterId,int healthPoints, double position,double speed, boolean isAlive, long attackSpeed, long spawnTime){
 
         this.characterId = characterId;
         this.healthPoints = healthPoints;
@@ -24,9 +28,15 @@ public abstract class Character {
         this.speed = speed;
         this.isAlive = isAlive;
         this.attackSpeed = attackSpeed;
+        this.spawnTime = spawnTime;
     }
     public boolean canAttack (long currentTime){
         return currentTime - lastAttackTime >= attackSpeed;
+    }
+
+
+    public long getSpawnTime() {
+        return spawnTime;
     }
 
     /**

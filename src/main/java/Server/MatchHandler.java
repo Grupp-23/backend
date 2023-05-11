@@ -7,6 +7,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class MatchHandler extends Thread {
 
@@ -17,9 +18,14 @@ public class MatchHandler extends Thread {
     private boolean gameWinner;
     private ArrayList<Character> team0Characters = new ArrayList<>();
     private ArrayList<Character> team1Characters = new ArrayList<>();
+
+    private LinkedList<Integer> team0SpawnQueue = new LinkedList<>();
+    private LinkedList<Integer> team1SpawnQueue = new LinkedList<>();
+
     private int characterCounter = 1;
     private Player player0;
     private Player player1;
+    private long lastSpawnTime;
 
     //--------------
 
@@ -53,6 +59,22 @@ public class MatchHandler extends Thread {
         gameWinner = true;
     }
 
+    public boolean canSpawn (long currentTime, Character character){
+        return currentTime - lastSpawnTime >= character.getSpawnTime();
+    }
+    public void spawn(long currentTime){
+        lastSpawnTime = currentTime;
+    }
+    public void addToSpawnQueue(int team, int characterType){
+        if (team == 0){
+            team0SpawnQueue.add(characterType);
+        }
+        if (team == 1){
+            team1SpawnQueue.add(characterType);
+        }
+
+    }
+
     public void spawnCharacter(Client client, int characterType){
         //GameManager --------------
         characterCounter++;
@@ -63,7 +85,6 @@ public class MatchHandler extends Thread {
             case 1:
                 System.out.println("Spawning Melee character");
                 character = new Melee(characterCounter, 100,((team*100)+(5+((-15)*team))),true,0.07, 1000);
-                System.out.println(character.toString());
                 break;
             case 2:
                 character = new Archer(characterCounter,75, ((team*100)+(5+((-15)*team))), true,0.07, 1500);
@@ -99,8 +120,8 @@ public class MatchHandler extends Thread {
 
         if (character != null){
 
-            client0.sendJson("{ \"method\": \"spawn\",\"type\":"+characterType+",\"team\":"+team+",\"id\":"+characterCounter+"}");
-            client1.sendJson("{ \"method\": \"spawn\",\"type\":"+characterType+",\"team\":"+team+",\"id\":"+characterCounter+"}");
+            client0.sendJson("{ \"method\": \"spawn\",\"type\":"+characterType+",\"team\":"+team+",\"id\":"+characterCounter+",\"pos\": "+character.getPosition()+"}");
+            client1.sendJson("{ \"method\": \"spawn\",\"type\":"+characterType+",\"team\":"+team+",\"id\":"+characterCounter+",\"pos\": "+character.getPosition()+"}");
         }
     }
 
@@ -174,7 +195,10 @@ public class MatchHandler extends Thread {
         System.out.println("Enemey character have: "+ characterEnemy.getHealthPoints()+ "hp");
     }
     public void attackBase(Character character, Base base){
-
+        int characterDamage = character.getDamage();
+        character.attack(System.currentTimeMillis());
+        base.takeDamage(characterDamage);
+        System.out.println("Enemy base have"+ base.getBaseHealthPoints()+"hp");
     }
 
 
@@ -186,6 +210,10 @@ public class MatchHandler extends Thread {
         for (int i = 0; i < team0Characters.size(); i++) {
 
             if (team0Characters.get(i).getPosition() >= 87){
+
+                if (team0Characters.get(i).canAttack(System.currentTimeMillis())){
+                    attackBase(team0Characters.get(i), player1.getBase());
+                }
                 continue;
             }
             if(i >= 1){
@@ -201,6 +229,8 @@ public class MatchHandler extends Thread {
                     }
 
                     if(team1Characters.get(0).getHealthPoints() <= 0){
+                        player0.increaseGold(team1Characters.get(0).getKillReward());
+                        System.out.println("Player-0 earned: "+ team1Characters.get(0).getKillReward());
                         removeCharacter(client1.getTeam(), team1Characters.get(0).getCharacterId());
                         removeCharacterFromlist(1,0);
 
@@ -222,6 +252,10 @@ public class MatchHandler extends Thread {
 
         for (int i = 0; i < team1Characters.size(); i++) {
             if (team1Characters.get(i).getPosition() <= 10){
+                if (team1Characters.get(i).canAttack(System.currentTimeMillis())){
+                    attackBase(team1Characters.get(i), player0.getBase());
+                }
+
                 continue;
             }
             if(i >= 1){
@@ -237,6 +271,10 @@ public class MatchHandler extends Thread {
                     }
 
                     if(team0Characters.get(0).getHealthPoints() <= 0){
+
+                        player1.increaseGold(team0Characters.get(0).getKillReward());
+                        System.out.println("Player-0 earned: "+ team0Characters.get(0).getKillReward());
+
                         removeCharacter(client0.getTeam(), team0Characters.get(0).getCharacterId());
                         removeCharacterFromlist(0,0);
 

@@ -7,6 +7,10 @@ public class Player {
     private Base base;
     private int id; // team id?
 
+    public Player (){
+        base = new Base();
+    }
+
     public int getId(){
         return id;
     }
