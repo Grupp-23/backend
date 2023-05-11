@@ -7,6 +7,7 @@ public abstract class Character {
     private boolean isAlive; //Status to check if a character is alive
     private int killedReward; //Amount of gold for killing a character
 
+    private int damage;
     private double speed; // The speed of a character
     private int cost;
 
@@ -29,7 +30,11 @@ public abstract class Character {
     /**
      * Method for each character played to take damage
      */
-    public void takeDamage(){}
+    public void takeDamage(int damage){
+        healthPoints = healthPoints - damage;
+    }
+
+    public abstract void takeDamage();
 
     /**
      * Method to check if each character played is alive or not
@@ -79,5 +84,9 @@ public abstract class Character {
 
     public double getSpeed() {
         return speed;
+    }
+
+    public int getDamage(){
+        return damage;
     }
 }

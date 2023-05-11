@@ -39,7 +39,7 @@ public class Archer extends Character {
      */
     @Override
     public void takeDamage(){
-
+        super.takeDamage(damage);
     }
 
 
@@ -64,5 +64,9 @@ public class Archer extends Character {
 
     public int getCost() {
         return cost;
+    }
+
+    public int getDamage() {
+        return damage;
     }
 }

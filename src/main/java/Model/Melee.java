@@ -37,7 +37,7 @@ public class Melee extends Character {
      */
     @Override
     public void takeDamage(){
-
+        super.takeDamage(damage);
     }
 
     /**
@@ -61,5 +61,8 @@ public class Melee extends Character {
 
     public int getCost() {
         return cost;
+    }
+    public int getDamage(){
+        return damage;
     }
 }

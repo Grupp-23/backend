@@ -55,12 +55,7 @@ public class Rider extends Character {
      */
     @Override
     public void takeDamage(){
-        /*
-        Probably needs an in parameter so that it knows how much it has taken damage.
-        Then just update the character's health.
-         */
-
-        // this.getHealthPoints() -= incomingDamage();
+        super.takeDamage(damage);
     }
 
 
@@ -86,5 +81,8 @@ public class Rider extends Character {
 
     public int getCost() {
         return cost;
+    }
+    public int getDamage(){
+        return damage;
     }
 }

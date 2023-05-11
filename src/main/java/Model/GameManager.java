@@ -99,6 +99,12 @@ public class GameManager {
 
     }
 
+    public void attackCharacter(Character characterAlly, Character characterEnemy){
+        int allyDamage = characterAlly.getDamage();
+        characterEnemy.takeDamage(allyDamage);
+        System.out.println("Enemey character have: "+ characterEnemy.getHealthPoints()+ "hp");
+    }
+
     /**
      * Set the position for character
      */
@@ -184,5 +190,6 @@ public class GameManager {
        player.increaseGold(character.getKillReward());
 
     }
+
     
 }
