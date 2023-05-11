@@ -118,8 +118,9 @@ public class MatchHandler extends Thread {
         client0.sendJson(json);
         client1.sendJson(json);
     }
-    public void 
-
+    public void removeCharacter(){
+        
+    }
 
 
 
