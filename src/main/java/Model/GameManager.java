@@ -49,6 +49,14 @@ public class GameManager {
             }
             if(team1Characters.size() > 0){
                 if(team0Characters.get(i).getPosition() >= team1Characters.get(0).getPosition()-3){
+
+                    attackCharacter(team0Characters.get(i),team1Characters.get(0));
+
+                    if(team1Characters.get(0).getHealthPoints() <= 0){
+                        team1Characters.remove(0);
+
+                    }
+
                     continue;
                 }
             }
