@@ -20,7 +20,7 @@ public abstract class Character {
 
     private long spawnTime;
 
-    public Character(int characterId,int healthPoints, double position,double speed, boolean isAlive, long attackSpeed, long spawnTime){
+    public Character(int characterId,int healthPoints, double position,double speed, boolean isAlive, long attackSpeed){
 
         this.characterId = characterId;
         this.healthPoints = healthPoints;

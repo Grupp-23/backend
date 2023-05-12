@@ -119,7 +119,7 @@ public class MatchHandler extends Thread {
 
 
         if (character != null){
-
+            System.out.println("Character id: "+ characterCounter);
             client0.sendJson("{ \"method\": \"spawn\",\"type\":"+characterType+",\"team\":"+team+",\"id\":"+characterCounter+",\"pos\": "+character.getPosition()+"}");
             client1.sendJson("{ \"method\": \"spawn\",\"type\":"+characterType+",\"team\":"+team+",\"id\":"+characterCounter+",\"pos\": "+character.getPosition()+"}");
         }
@@ -135,9 +135,10 @@ public class MatchHandler extends Thread {
 
         Gson gson = new Gson();
         String json = gson.toJson(obj);
-        //System.out.println(json);
-        client0.sendJson(json);
+        System.out.println("New pos: "+json);
         client1.sendJson(json);
+        client0.sendJson(json);
+
     }
     public void removeCharacter(int team, int id){
         JsonObject object = new JsonObject();
@@ -148,9 +149,12 @@ public class MatchHandler extends Thread {
 
         Gson gson = new Gson();
         String json = gson.toJson(object);
-        client0.sendJson(json);
+        System.out.println("Remove: "+json);
         client1.sendJson(json);
+        client0.sendJson(json);
+
     }
+
 
 
 
@@ -231,6 +235,7 @@ public class MatchHandler extends Thread {
                     if(team1Characters.get(0).getHealthPoints() <= 0){
                         player0.increaseGold(team1Characters.get(0).getKillReward());
                         System.out.println("Player-0 earned: "+ team1Characters.get(0).getKillReward());
+
                         removeCharacter(client1.getTeam(), team1Characters.get(0).getCharacterId());
                         removeCharacterFromlist(1,0);
 
@@ -246,6 +251,8 @@ public class MatchHandler extends Thread {
             obj.addProperty("id",team0Characters.get(i).getCharacterId());
             obj.addProperty("pos",team0Characters.get(i).getPosition());
             jsonArray.add(obj);
+
+
 
 
         }
