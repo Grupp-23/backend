@@ -61,7 +61,10 @@ public abstract class Character {
      * @return
      */
     public boolean isAlive(){
-        return false;
+        return isAlive;
+    }
+    public void setAlive(boolean isAlive){
+        this.isAlive = isAlive;
     }
 
     /**
