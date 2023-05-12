@@ -35,21 +35,6 @@ public class Rider extends Character {
         super.takeDamage(damage);
     }
 
-
-    /**
-     * Check if the character is alive or not.
-     *
-     * @return
-     */
-    @Override
-    public boolean isAlive(){
-        return this.getHealthPoints() > 0;
-    }
-
-    /**
-     * Sends the reward to the opponent for killing the character.
-     * @return returns an int (gold) to the opponent as a reward.
-     */
     @Override
     public int getKillReward(){
         // Need to add the reward to opponents gold. This method might not need changing if dealt with in gameManager.

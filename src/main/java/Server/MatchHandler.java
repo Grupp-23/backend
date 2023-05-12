@@ -100,7 +100,6 @@ public class MatchHandler extends Thread {
             if (checkPlayer0Gold){
                 System.out.println("Player-0 have this amount: "+player0.getGold());
                 team0Characters.add(character);
-                character.setAlive(true);
                 player0.reduceGold(character.getCost());
 
                 System.out.println("Player-0 have bought a charachter for: "+ character.getCost());
@@ -112,7 +111,6 @@ public class MatchHandler extends Thread {
             if (checkPlayer1Gold){
                 System.out.println("Player-1 have this amount: "+player1.getGold());
                 team1Characters.add(character);
-                character.setAlive(true);
                 player1.reduceGold(character.getCost());
                 System.out.println("Player-1 have bought a charachter for: "+ character.getCost());
             }
