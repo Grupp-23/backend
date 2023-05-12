@@ -8,82 +8,52 @@ import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Random;
 
 public class MatchHandler extends Thread {
 
-    private Client client0;
-    private Client client1;
+    private Client[] clients;
+    private ArrayList<Character>[] teamCharacters;
 
-    //GameManager var ------------------
-    private boolean gameWinner;
-    private ArrayList<Character> team0Characters = new ArrayList<>();
-    private ArrayList<Character> team1Characters = new ArrayList<>();
+    private int characterCounter = 0;
 
-    private LinkedList<Integer> team0SpawnQueue = new LinkedList<>();
-    private LinkedList<Integer> team1SpawnQueue = new LinkedList<>();
+    public MatchHandler(Client client0, Client client1) {
+        initCharacterLists();
+        initClients(client0, client1);
 
-    private int characterCounter = 1;
-    private Player player0;
-    private Player player1;
-    private long lastSpawnTime;
-
-    //--------------
-
-    public MatchHandler(Client client0, Client client1){
         String json1 = "found";
 
-        client0.sendJson(json1);
-        client1.sendJson(json1);
-
-        this.client0 = client0;
-        this.client1 = client1;
-
-        client0.setTeam(0);
-        client1.setTeam(1);
+        clients[0].sendJson(json1);
+        clients[1].sendJson(json1);
 
         start();
     }
 
-    /**
-     * Start game creates two players
-     */
-    public void startGame(){
-        player0 = new Player(); // == team 0
-        player1 = new Player(); // == team 1
+    public void initClients(Client client0, Client client1) {
+        clients = new Client[2];
+        clients[0] = client0;
+        clients[1] = client1;
+
+        clients[0].setTeam(0);
+        clients[1].setTeam(1);
     }
 
-    /**
-     * End the game
-     */
-    public void endGame(){
-        gameWinner = true;
+    public void initCharacterLists() {
+        teamCharacters = new ArrayList[2];
+
+        teamCharacters[0] = new ArrayList<>();
+        teamCharacters[1] = new ArrayList<>();
     }
 
-    public boolean canSpawn (long currentTime, Character character){
-        return currentTime - lastSpawnTime >= character.getSpawnTime();
-    }
-    public void spawn(long currentTime){
-        lastSpawnTime = currentTime;
-    }
-    public void addToSpawnQueue(int team, int characterType){
-        if (team == 0){
-            team0SpawnQueue.add(characterType);
-        }
-        if (team == 1){
-            team1SpawnQueue.add(characterType);
-        }
-
-    }
-
-    public void spawnCharacter(Client client, int characterType){
-        //GameManager --------------
+    public void spawnCharacter(Client client, int characterType) {
         characterCounter++;
+
         int team = client.getTeam();
-        System.out.println("Spawning character");
+
         Character character = null;
-        switch(characterType){
+
+        switch(characterType) {
             case 1:
-                System.out.println("Spawning Melee character");
                 character = new Melee(characterCounter, 100,((team*100)+(5+((-15)*team))),true,0.07, 1000);
                 break;
             case 2:
@@ -92,224 +62,161 @@ public class MatchHandler extends Thread {
             case 3:
                 character = new Rider(characterCounter,300, ((team*100)+(5+((-15)*team))), true,0.02, 2000);
                 break;
+            default:
+                return;
         }
 
-        if(team == 0){
-            System.out.println("Team 0 has been selected");
-            boolean checkPlayer0Gold = checkGold(player0, character);
-            if (checkPlayer0Gold){
-                System.out.println("Player-0 have this amount: "+player0.getGold());
-                team0Characters.add(character);
-                player0.reduceGold(character.getCost());
-                System.out.println("Player-0 have bought a charachter for: "+ character.getCost());
-            }
-        }
-        if (team == 1){
-            System.out.println("Team 1 has been selected");
-            boolean checkPlayer1Gold = checkGold(player0, character);
-            if (checkPlayer1Gold){
-                System.out.println("Player-1 have this amount: "+player1.getGold());
-                team1Characters.add(character);
-                player1.reduceGold(character.getCost());
-                System.out.println("Player-1 have bought a charachter for: "+ character.getCost());
-            }
-        }
+        teamCharacters[team].add(character);
 
-        //------------------
-
-
-        if (character != null){
-            client0.sendJson("{ \"method\": \"spawn\",\"type\":"+characterType+",\"team\":"+team+",\"id\":"+characterCounter+",\"pos\": "+character.getPosition()+"}");
-            client1.sendJson("{ \"method\": \"spawn\",\"type\":"+characterType+",\"team\":"+team+",\"id\":"+characterCounter+",\"pos\": "+character.getPosition()+"}");
-        }
+        clients[0].sendJson("{ \"method\": \"spawn\",\"type\":"+characterType+",\"team\":"+team+",\"id\":"+characterCounter+",\"pos\": "+character.getPosition()+"}");
+        clients[1].sendJson("{ \"method\": \"spawn\",\"type\":"+characterType+",\"team\":"+team+",\"id\":"+characterCounter+",\"pos\": "+character.getPosition()+"}");
     }
 
+    public void updateCharacterPosition(Character character, int team) {
 
-    public void setCharacterPosition(){
+        int temp = (int)(((team-0.5f)*2)*-1);
+
+        character.updatePosition(character.getSpeed(),temp);
+
         JsonObject obj = new JsonObject();
-        obj.addProperty("method", "update");
-
-        JsonArray array = updateGameState();
-        obj.add("game", array);
+        obj.addProperty("method", "move");
+        obj.addProperty("team", team);
+        obj.addProperty("id",character.getCharacterId());
+        obj.addProperty("pos",character.getPosition());
 
         Gson gson = new Gson();
         String json = gson.toJson(obj);
-        //System.out.println("New pos: "+json);
-        client1.sendJson(json);
-        client0.sendJson(json);
 
+        System.out.println(json);
+
+        clients[0].sendJson(json);
+        clients[1].sendJson(json);
     }
-    public void removeCharacter(int team, int id){
+
+    public boolean baseCollision(int team, Character character) {
+        if (team == 0) {
+            if (character.getPosition() >= 87) {
+                return true;
+            }
+        }
+        else {
+            if (character.getPosition() <= 10) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean allyCollision(int team, int index, Character character) {
+        if (index < 1) {
+            return false;
+        }
+
+        if (team == 0) {
+            if (character.getPosition() >= teamCharacters[team].get(index-1).getPosition()-3) {
+                return true;
+            }
+        }
+        else {
+            if (character.getPosition() <= teamCharacters[team].get(index-1).getPosition()+3) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean enemyCollision(int team, Character character, int enemyId) {
+
+        if (teamCharacters[enemyId].size() == 0) {
+            return false;
+        }
+
+        if (team == 0) {
+            if (character.getPosition() >= teamCharacters[enemyId].get(0).getPosition()-3) {
+                return true;
+            }
+        }
+        else {
+            if (character.getPosition() <= teamCharacters[enemyId].get(0).getPosition()+3) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public void attackBase(Character character, Base base, long time){
+        character.attack(time);
+        base.takeDamage(character.getDamage());
+    }
+
+    public void attackCharacter(Character allyCharacter, Character enemyCharacter, long time, int enemyId) {
+        allyCharacter.attack(time);
+        enemyCharacter.takeDamage(allyCharacter.getDamage());
+
+        if (enemyCharacter.getHealthPoints() <= 0) {
+            removeCharacter(enemyCharacter, enemyId);
+        }
+    }
+
+    public void removeCharacter(Character character, int enemyId) {
+        teamCharacters[enemyId].remove(character);
+
         JsonObject object = new JsonObject();
         object.addProperty("method","characterdead");
-        object.addProperty("team",team);
-        object.addProperty("id", id);
-
+        object.addProperty("team",enemyId);
+        object.addProperty("id", character.getCharacterId());
 
         Gson gson = new Gson();
         String json = gson.toJson(object);
-        //System.out.println("Remove: "+json);
-        client1.sendJson(json);
-        client0.sendJson(json);
-
+        clients[0].sendJson(json);
+        clients[1].sendJson(json);
     }
 
+    public void update() {
 
+        long currentTime = System.currentTimeMillis();
 
+        for (int currentTeam = 0; currentTeam < clients.length; currentTeam++) {
+            int enemyId = (currentTeam -1)*(-1);
 
+            for (int i = 0; i < teamCharacters[currentTeam].size(); i++) {
+                Character currentCharacter = teamCharacters[currentTeam].get(i);
 
+                // Attack enemy base
+                if(baseCollision(currentTeam, currentCharacter)) {
+                    if (currentCharacter.canAttack(currentTime)) {
+                        attackBase(currentCharacter, clients[enemyId].getBase(), currentTime);
+                    }
+                }
+
+                // Attack enemy character
+                else if (enemyCollision(currentTeam, currentCharacter, enemyId)) {
+                    if (currentCharacter.canAttack(currentTime)) {
+                        attackCharacter(currentCharacter, teamCharacters[enemyId].get(0), currentTime, enemyId);
+                    }
+                }
+
+                // If no allied collision: Update position
+                else if(!allyCollision(currentTeam, i, currentCharacter)){
+                    updateCharacterPosition(currentCharacter, currentTeam);
+                }
+
+            }
+        }
+    }
+
+    @Override
     public void run() {
-        startGame();
-
-        while (true){
-            setCharacterPosition();
+        while (true) {
+            update();
             try {
                 sleep(10);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         }
-
     }
-    //GameManager----------------------
-
-    /**
-     * Checks so a player has sufficent amount of gold before buying a character
-     * @return returns if player can buy character or not
-     */
-    public boolean checkGold(Player player, Character character){ // parameter for player and character
-        return player.getGold() >= character.getCost();
-    }
-
-    public void removeCharacterFromlist(int team, int indexInList){
-        if(team == 0){
-            team0Characters.remove(indexInList);
-        }
-        if(team == 1){
-            team1Characters.remove(indexInList);
-        }
-    }
-
-
-    public void attackCharacter(Character characterAlly, Character characterEnemy){
-        int allyDamage = characterAlly.getDamage();
-        characterAlly.attack(System.currentTimeMillis());
-        characterEnemy.takeDamage(allyDamage);
-        System.out.println("Enemey character have: "+ characterEnemy.getHealthPoints()+ "hp");
-    }
-    public void attackBase(Character character, Base base){
-        int characterDamage = character.getDamage();
-        character.attack(System.currentTimeMillis());
-        base.takeDamage(characterDamage);
-        System.out.println("Enemy base have"+ base.getBaseHealthPoints()+"hp");
-    }
-
-
-    public JsonArray updateGameState(){
-
-        JsonArray jsonArray = new JsonArray();
-
-
-        for (int i = 0; i < team0Characters.size(); i++) {
-
-            Character characterTeam0 = team0Characters.get(i); //Saves the character on position index from the ArrayList
-            Long currentTime = System.currentTimeMillis(); //Saves the
-
-            if(characterTeam0.getPosition() >= 87) {
-                if (characterTeam0.canAttack(currentTime)) {
-                    attackBase(characterTeam0, player1.getBase());
-
-                }
-                continue;
-            }
-
-            if(i >= 1 && characterTeam0.getPosition() >= team0Characters.get(i-1).getPosition()-3){
-                continue;
-            }
-
-            if(team1Characters.size() > 0){
-                if(characterTeam0.getPosition() >= team1Characters.get(0).getPosition()-3){
-
-                    if (characterTeam0.canAttack(currentTime)){
-                        attackCharacter(characterTeam0,team1Characters.get(0));
-                    }
-
-                    if(team1Characters.get(0).getHealthPoints() <= 0){
-
-                        player0.increaseGold(team1Characters.get(0).getKillReward());
-                        System.out.println("Player-0 earned: "+ team1Characters.get(0).getKillReward());
-
-                        removeCharacter(client1.getTeam(), team1Characters.get(0).getCharacterId());
-                        removeCharacterFromlist(1,0);
-
-                    }
-
-                    continue;
-                }
-            }
-
-            characterTeam0.updatePosition(characterTeam0.getSpeed(),1);
-            JsonObject obj = new JsonObject();
-            obj.addProperty("team", 0);
-            obj.addProperty("id",characterTeam0.getCharacterId());
-            obj.addProperty("pos",characterTeam0.getPosition());
-            jsonArray.add(obj);
-
-
-
-
-        }
-
-        for (int i = 0; i < team1Characters.size(); i++) {
-
-            Character characterTeam1 = team1Characters.get(i); //Saves the character on position index from the ArrayList
-            long currentTime = System.currentTimeMillis();
-
-            if (characterTeam1.getPosition() <= 10 ) {
-                if (characterTeam1.canAttack(currentTime)) {
-                    attackBase(characterTeam1, player0.getBase());
-
-                }
-                continue;
-            }
-
-            if(i >= 1 && characterTeam1.getPosition() <= team1Characters.get(i-1).getPosition()+3) {
-                continue;
-            }
-
-            if(team0Characters.size() > 0){
-                if(characterTeam1.getPosition() <= team0Characters.get(0).getPosition()+3){
-
-                    if (characterTeam1.canAttack(currentTime)){
-                        attackCharacter(characterTeam1,team0Characters.get(0));
-                    }
-
-                    if(team0Characters.get(0).getHealthPoints() <= 0){
-
-                        player1.increaseGold(team0Characters.get(0).getKillReward());
-                        System.out.println("Player-0 earned: "+ team0Characters.get(0).getKillReward());
-
-                        removeCharacter(client0.getTeam(), team0Characters.get(0).getCharacterId());
-                        removeCharacterFromlist(0,0);
-
-                    }
-
-                    continue;
-                }
-            }
-
-            characterTeam1.updatePosition(characterTeam1.getSpeed(),(-1));
-            JsonObject obj = new JsonObject();
-            obj.addProperty("team", 1);
-            obj.addProperty("id",characterTeam1.getCharacterId());
-            obj.addProperty("pos",characterTeam1.getPosition());
-            jsonArray.add(obj);
-        }
-
-        return jsonArray;
-
-
-
-    }
-    //---------------------------------------------------
 }

@@ -53,8 +53,6 @@ public abstract class Character {
         healthPoints = healthPoints - damage;
     }
 
-    public abstract void takeDamage();
-
     /**
      * Method to check if each character played is alive or not
      *

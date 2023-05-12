@@ -24,18 +24,6 @@ public class Rider extends Character {
         super(characterId,healthPoints, position, speed, isAlive, attackSpeed);
     }
 
-
-
-    /**
-     * Method for updating the character's health,
-     * how much damage is based on the opponent.
-     */
-    @Override
-    public void takeDamage(){
-        super.takeDamage(damage);
-    }
-
-
     /**
      * Check if the character is alive or not.
      *
