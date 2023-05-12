@@ -134,7 +134,7 @@ public class MatchHandler extends Thread {
 
         Gson gson = new Gson();
         String json = gson.toJson(obj);
-        System.out.println("New pos: "+json);
+        //System.out.println("New pos: "+json);
         client1.sendJson(json);
         client0.sendJson(json);
 
@@ -148,7 +148,7 @@ public class MatchHandler extends Thread {
 
         Gson gson = new Gson();
         String json = gson.toJson(object);
-        System.out.println("Remove: "+json);
+        //System.out.println("Remove: "+json);
         client1.sendJson(json);
         client0.sendJson(json);
 
@@ -215,12 +215,13 @@ public class MatchHandler extends Thread {
             Character characterTeam0 = team0Characters.get(i); //Saves the character on position index from the ArrayList
             Long currentTime = System.currentTimeMillis(); //Saves the
 
+            if(characterTeam0.getPosition() >= 87) {
+                if (characterTeam0.canAttack(currentTime)) {
+                    attackBase(characterTeam0, player1.getBase());
 
-            if (characterTeam0.getPosition() >= 87 && characterTeam0.canAttack(currentTime)){
-                attackBase(characterTeam0, player1.getBase());
+                }
                 continue;
             }
-
 
             if(i >= 1 && characterTeam0.getPosition() >= team0Characters.get(i-1).getPosition()-3){
                 continue;
@@ -264,9 +265,11 @@ public class MatchHandler extends Thread {
             Character characterTeam1 = team1Characters.get(i); //Saves the character on position index from the ArrayList
             long currentTime = System.currentTimeMillis();
 
+            if (characterTeam1.getPosition() <= 10 ) {
+                if (characterTeam1.canAttack(currentTime)) {
+                    attackBase(characterTeam1, player0.getBase());
 
-            if (characterTeam1.getPosition() <= 10 && characterTeam1.canAttack(currentTime)){
-                attackBase(characterTeam1, player0.getBase());
+                }
                 continue;
             }
 
