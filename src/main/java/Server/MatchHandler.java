@@ -119,7 +119,6 @@ public class MatchHandler extends Thread {
 
 
         if (character != null){
-            System.out.println("Character id: "+ characterCounter);
             client0.sendJson("{ \"method\": \"spawn\",\"type\":"+characterType+",\"team\":"+team+",\"id\":"+characterCounter+",\"pos\": "+character.getPosition()+"}");
             client1.sendJson("{ \"method\": \"spawn\",\"type\":"+characterType+",\"team\":"+team+",\"id\":"+characterCounter+",\"pos\": "+character.getPosition()+"}");
         }
@@ -182,12 +181,12 @@ public class MatchHandler extends Thread {
         return player.getGold() >= character.getCost();
     }
 
-    public void removeCharacterFromlist(int team, int characterId){
+    public void removeCharacterFromlist(int team, int indexInList){
         if(team == 0){
-            team0Characters.remove(characterId);
+            team0Characters.remove(indexInList);
         }
         if(team == 1){
-            team1Characters.remove(characterId);
+            team1Characters.remove(indexInList);
         }
     }
 
@@ -213,26 +212,29 @@ public class MatchHandler extends Thread {
 
         for (int i = 0; i < team0Characters.size(); i++) {
 
-            if (team0Characters.get(i).getPosition() >= 87){
+            Character characterTeam0 = team0Characters.get(i); //Saves the character on position index from the ArrayList
+            Long currentTime = System.currentTimeMillis(); //Saves the
 
-                if (team0Characters.get(i).canAttack(System.currentTimeMillis())){
-                    attackBase(team0Characters.get(i), player1.getBase());
-                }
+
+            if (characterTeam0.getPosition() >= 87 && characterTeam0.canAttack(currentTime)){
+                attackBase(characterTeam0, player1.getBase());
                 continue;
             }
-            if(i >= 1){
-                if(team0Characters.get(i).getPosition() >= team0Characters.get(i-1).getPosition()-3){
-                    continue;
-                }
-            }
-            if(team1Characters.size() > 0){
-                if(team0Characters.get(i).getPosition() >= team1Characters.get(0).getPosition()-3){
 
-                    if (team0Characters.get(i).canAttack(System.currentTimeMillis())){
-                        attackCharacter(team0Characters.get(i),team1Characters.get(0));
+
+            if(i >= 1 && characterTeam0.getPosition() >= team0Characters.get(i-1).getPosition()-3){
+                continue;
+            }
+
+            if(team1Characters.size() > 0){
+                if(characterTeam0.getPosition() >= team1Characters.get(0).getPosition()-3){
+
+                    if (characterTeam0.canAttack(currentTime)){
+                        attackCharacter(characterTeam0,team1Characters.get(0));
                     }
 
                     if(team1Characters.get(0).getHealthPoints() <= 0){
+
                         player0.increaseGold(team1Characters.get(0).getKillReward());
                         System.out.println("Player-0 earned: "+ team1Characters.get(0).getKillReward());
 
@@ -245,11 +247,11 @@ public class MatchHandler extends Thread {
                 }
             }
 
-            team0Characters.get(i).updatePosition(team0Characters.get(i).getSpeed(),1);
+            characterTeam0.updatePosition(characterTeam0.getSpeed(),1);
             JsonObject obj = new JsonObject();
             obj.addProperty("team", 0);
-            obj.addProperty("id",team0Characters.get(i).getCharacterId());
-            obj.addProperty("pos",team0Characters.get(i).getPosition());
+            obj.addProperty("id",characterTeam0.getCharacterId());
+            obj.addProperty("pos",characterTeam0.getPosition());
             jsonArray.add(obj);
 
 
@@ -258,23 +260,25 @@ public class MatchHandler extends Thread {
         }
 
         for (int i = 0; i < team1Characters.size(); i++) {
-            if (team1Characters.get(i).getPosition() <= 10){
-                if (team1Characters.get(i).canAttack(System.currentTimeMillis())){
-                    attackBase(team1Characters.get(i), player0.getBase());
-                }
 
+            Character characterTeam1 = team1Characters.get(i); //Saves the character on position index from the ArrayList
+            long currentTime = System.currentTimeMillis();
+
+
+            if (characterTeam1.getPosition() <= 10 && characterTeam1.canAttack(currentTime)){
+                attackBase(characterTeam1, player0.getBase());
                 continue;
             }
-            if(i >= 1){
-                if(team1Characters.get(i).getPosition() <= team1Characters.get(i-1).getPosition()+3){
-                    continue;
-                }
-            }
-            if(team0Characters.size() > 0){
-                if(team1Characters.get(i).getPosition() <= team0Characters.get(0).getPosition()+3){
 
-                    if (team1Characters.get(i).canAttack(System.currentTimeMillis())){
-                        attackCharacter(team1Characters.get(i),team0Characters.get(0));
+            if(i >= 1 && characterTeam1.getPosition() <= team1Characters.get(i-1).getPosition()+3) {
+                continue;
+            }
+
+            if(team0Characters.size() > 0){
+                if(characterTeam1.getPosition() <= team0Characters.get(0).getPosition()+3){
+
+                    if (characterTeam1.canAttack(currentTime)){
+                        attackCharacter(characterTeam1,team0Characters.get(0));
                     }
 
                     if(team0Characters.get(0).getHealthPoints() <= 0){
@@ -291,11 +295,11 @@ public class MatchHandler extends Thread {
                 }
             }
 
-            team1Characters.get(i).updatePosition(team1Characters.get(i).getSpeed(),(-1));
+            characterTeam1.updatePosition(characterTeam1.getSpeed(),(-1));
             JsonObject obj = new JsonObject();
             obj.addProperty("team", 1);
-            obj.addProperty("id",team1Characters.get(i).getCharacterId());
-            obj.addProperty("pos",team1Characters.get(i).getPosition());
+            obj.addProperty("id",characterTeam1.getCharacterId());
+            obj.addProperty("pos",characterTeam1.getPosition());
             jsonArray.add(obj);
         }
 
