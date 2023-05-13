@@ -45,6 +45,10 @@ public class MatchHandler extends Thread {
         teamCharacters[1] = new ArrayList<>();
     }
 
+    public Client[] getClients() {
+        return clients;
+    }
+
     public void spawnCharacter(Client client, int characterType) {
         characterCounter++;
 

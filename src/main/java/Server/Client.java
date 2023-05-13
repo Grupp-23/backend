@@ -47,6 +47,10 @@ public class Client {
         return 0;
     }
 
+    public Session getSession() {
+        return session;
+    }
+
     public void sendJson(String json) throws IllegalStateException {
         try {
             session.getRemote().sendString(json);

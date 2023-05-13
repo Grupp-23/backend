@@ -53,14 +53,36 @@ public class EchoSocket {
         }
     }
 
-
     @OnWebSocketClose
     public void onClose(Session session, int statusCode, String reason) {
         System.out.println("Connection closed with statusCode=" + statusCode + ", reason=" + reason);
+
+        String address = session.getRemote().getInetSocketAddress().toString();
+
         if(sessions.contains(session)){
             sessions.remove(session);
         }
 
+        if (clients.containsKey(address)) {
+            MatchHandler targetMatch = matches.get(clients.get(address));
+
+            closeMatch(targetMatch);
+        }
+    }
+
+    public void closeMatch(MatchHandler targetMatch) {
+        Client[] targetClients = targetMatch.getClients();
+
+        for (int i = 0; i < targetClients.length; i++) {
+            if (targetClients[i].getSession().isOpen()) {
+                System.out.println("Player " + i + " won");
+                targetClients[i].getSession().close();
+            }
+
+            clients.remove(targetClients[i].getSession().getRemote().getInetSocketAddress().toString());
+        }
+
+        matches.remove(targetClients[0]);
     }
 
     @OnWebSocketMessage
