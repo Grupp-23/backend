@@ -10,7 +10,7 @@ public class Rider extends Character {
     private final int killedReward = 65; // When an archer is killed the opponent gets 65 gold.
     private final int cost = 75; // Cost 75 gold (in-game currency).
     private final int damage = 50; // Each hit does 50 damage to opponent character.
-    private final int attackRange = 20; // Assumed 20 pixels range
+    private final int attackRange = 0; // Assumed 20 pixels range
 
 
     /**
@@ -20,8 +20,8 @@ public class Rider extends Character {
      * @param position Where it is located.
      * @param isAlive if it is alive or not.
      */
-    public Rider(int characterId, int healthPoints, double position, boolean isAlive, double speed, long attackSpeed) {
-        super(characterId,healthPoints, position, speed, isAlive, attackSpeed);
+    public Rider(int characterId, int healthPoints, double position, boolean isAlive, double speed, long attackSpeed, float size) {
+        super(characterId,healthPoints, position, speed, isAlive, attackSpeed, size);
     }
 
     /**
@@ -49,5 +49,10 @@ public class Rider extends Character {
     }
     public int getDamage(){
         return damage;
+    }
+
+    @Override
+    public int getAttackRange() {
+        return attackRange;
     }
 }

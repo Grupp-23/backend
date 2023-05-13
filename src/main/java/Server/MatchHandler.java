@@ -54,13 +54,13 @@ public class MatchHandler extends Thread {
 
         switch(characterType) {
             case 1:
-                character = new Melee(characterCounter, 100,((team*100)+(5+((-15)*team))),true,0.07, 1000);
+                character = new Melee(characterCounter, 100,((team*100)+(5+((-15)*team))),true,0.07, 1000, 3.3f);
                 break;
             case 2:
-                character = new Archer(characterCounter,75, ((team*100)+(5+((-15)*team))), true,0.07, 1500);
+                character = new Archer(characterCounter,75, ((team*100)+(5+((-15)*team))), true,0.07, 1500, 3.3f);
                 break;
             case 3:
-                character = new Rider(characterCounter,300, ((team*100)+(5+((-15)*team))), true,0.02, 2000);
+                character = new Rider(characterCounter,300, ((team*100)+(5+((-15)*team))), true,0.04, 2000, 9.5f);
                 break;
             default:
                 return;
@@ -92,37 +92,32 @@ public class MatchHandler extends Thread {
     }
 
     public boolean baseCollision(int team, Character character) {
+
+        float baseColl = character.getSize()/2 + character.getAttackRange();
+
         if (team == 0) {
-            if (character.getPosition() >= 87) {
-                return true;
-            }
+            return (character.getPosition() >= 89-baseColl);
         }
         else {
-            if (character.getPosition() <= 10) {
-                return true;
-            }
+            return (character.getPosition() <= 8+baseColl);
         }
-
-        return false;
     }
 
     public boolean allyCollision(int team, int index, Character character) {
+
         if (index < 1) {
             return false;
         }
 
+        Character tempCharacter = teamCharacters[team].get(index - 1);
+        double collisionRange = (tempCharacter.getSize() / 2) + (character.getSize() / 2);
+
         if (team == 0) {
-            if (character.getPosition() >= teamCharacters[team].get(index-1).getPosition()-3) {
-                return true;
-            }
+            return (character.getPosition() >= tempCharacter.getPosition() - collisionRange);
         }
         else {
-            if (character.getPosition() <= teamCharacters[team].get(index-1).getPosition()+3) {
-                return true;
-            }
+            return (character.getPosition() <= tempCharacter.getPosition() + collisionRange);
         }
-
-        return false;
     }
 
     public boolean enemyCollision(int team, Character character, int enemyId) {
@@ -131,18 +126,15 @@ public class MatchHandler extends Thread {
             return false;
         }
 
+        Character tempCharacter = teamCharacters[enemyId].get(0);
+        double collisionRange = (tempCharacter.getSize()/2)+(character.getSize()/2);
+
         if (team == 0) {
-            if (character.getPosition() >= teamCharacters[enemyId].get(0).getPosition()-3) {
-                return true;
-            }
+            return (character.getPosition() >= tempCharacter.getPosition()-(collisionRange+character.getAttackRange()));
         }
         else {
-            if (character.getPosition() <= teamCharacters[enemyId].get(0).getPosition()+3) {
-                return true;
-            }
+            return (character.getPosition() <= tempCharacter.getPosition()+(collisionRange+character.getAttackRange()));
         }
-
-        return false;
     }
 
     public void attackBase(Character character, Base base, long time){
@@ -183,17 +175,17 @@ public class MatchHandler extends Thread {
             for (int i = 0; i < teamCharacters[currentTeam].size(); i++) {
                 Character currentCharacter = teamCharacters[currentTeam].get(i);
 
-                // Attack enemy base
-                if(baseCollision(currentTeam, currentCharacter)) {
+                // Attack enemy character
+                if (enemyCollision(currentTeam, currentCharacter, enemyId)) {
                     if (currentCharacter.canAttack(currentTime)) {
-                        attackBase(currentCharacter, clients[enemyId].getBase(), currentTime);
+                        attackCharacter(currentCharacter, teamCharacters[enemyId].get(0), currentTime, enemyId);
                     }
                 }
 
-                // Attack enemy character
-                else if (enemyCollision(currentTeam, currentCharacter, enemyId)) {
+                // Attack enemy base
+                else if(baseCollision(currentTeam, currentCharacter)) {
                     if (currentCharacter.canAttack(currentTime)) {
-                        attackCharacter(currentCharacter, teamCharacters[enemyId].get(0), currentTime, enemyId);
+                        attackBase(currentCharacter, clients[enemyId].getBase(), currentTime);
                     }
                 }
 

@@ -16,11 +16,13 @@ public abstract class Character {
     private long lastAttackTime;
     private long attackSpeed;
 
-
+    public int attackRange;
 
     private long spawnTime;
 
-    public Character(int characterId,int healthPoints, double position,double speed, boolean isAlive, long attackSpeed){
+    private float size;
+
+    public Character(int characterId,int healthPoints, double position,double speed, boolean isAlive, long attackSpeed, float size){
 
         this.characterId = characterId;
         this.healthPoints = healthPoints;
@@ -29,6 +31,7 @@ public abstract class Character {
         this.isAlive = isAlive;
         this.attackSpeed = attackSpeed;
         this.spawnTime = spawnTime;
+        this.size = size;
     }
     public boolean canAttack (long currentTime){
         return currentTime - lastAttackTime >= attackSpeed;
@@ -105,6 +108,14 @@ public abstract class Character {
 
     public int getDamage(){
         return damage;
+    }
+
+    public int getAttackRange() {
+        return attackRange;
+    }
+
+    public float getSize() {
+        return size;
     }
 
 }
