@@ -87,8 +87,6 @@ public class MatchHandler extends Thread {
         Gson gson = new Gson();
         String json = gson.toJson(obj);
 
-        System.out.println(json);
-
         clients[0].sendJson(json);
         clients[1].sendJson(json);
     }
