@@ -73,6 +73,10 @@ public class MatchHandler extends Thread {
                 return;
         }
 
+        if (!hasGold(client, character.getCost())) {
+            return;
+        }
+
         teamCharacters[team].add(character);
 
         clients[0].sendJson("{ \"method\": \"spawn\",\"type\":"+characterType+",\"team\":"+team+",\"id\":"+characterCounter+",\"pos\": "+character.getPosition()+"}");
@@ -146,32 +150,38 @@ public class MatchHandler extends Thread {
         }
     }
 
+    public boolean hasGold(Client client, int cost) {
+        return client.getGold() >= cost;
+    }
+
     public void attackBase(Character character, Base base, long time){
         character.attack(time);
         base.takeDamage(character.getDamage());
     }
 
-    public void attackCharacter(Character allyCharacter, Character enemyCharacter, long time, int enemyId) {
+    public void attackCharacter(Character allyCharacter, Character enemyCharacter, long time, int victimId, int attackerId) {
         allyCharacter.attack(time);
         enemyCharacter.takeDamage(allyCharacter.getDamage());
 
         if (enemyCharacter.getHealthPoints() <= 0) {
-            removeCharacter(enemyCharacter, enemyId);
+            removeCharacter(enemyCharacter, victimId, attackerId);
         }
     }
 
-    public void removeCharacter(Character character, int enemyId) {
-        teamCharacters[enemyId].remove(character);
+    public void removeCharacter(Character character, int victimId, int killerId) {
+        teamCharacters[victimId].remove(character);
 
         JsonObject object = new JsonObject();
         object.addProperty("method","characterdead");
-        object.addProperty("team",enemyId);
+        object.addProperty("team",victimId);
         object.addProperty("id", character.getCharacterId());
 
         Gson gson = new Gson();
         String json = gson.toJson(object);
         clients[0].sendJson(json);
         clients[1].sendJson(json);
+
+        clients[killerId].increaseGold(character.getKillReward());
     }
 
     public void update() {
@@ -187,7 +197,7 @@ public class MatchHandler extends Thread {
                 // Attack enemy character
                 if (enemyCollision(currentTeam, currentCharacter, enemyId)) {
                     if (currentCharacter.canAttack(currentTime)) {
-                        attackCharacter(currentCharacter, teamCharacters[enemyId].get(0), currentTime, enemyId);
+                        attackCharacter(currentCharacter, teamCharacters[enemyId].get(0), currentTime, enemyId, currentTeam);
                     }
                 }
 
