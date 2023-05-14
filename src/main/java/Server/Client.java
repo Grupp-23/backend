@@ -1,6 +1,8 @@
 package Server;
 
 import Model.Base;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import org.eclipse.jetty.websocket.api.Session;
 
 import java.io.IOException;
@@ -11,7 +13,7 @@ public class Client {
     private Session session;
     private int team;
     private String name;
-    private int gold = 200;
+    private int gold = 0;
     private Base base;
 
     public Client(Session session){
@@ -32,10 +34,24 @@ public class Client {
 
     public void reduceGold(int amount) {
         gold -= amount;
+
+        sendGoldInfo(gold);
     }
 
     public void increaseGold(int amount) {
         gold += amount;
+
+        sendGoldInfo(gold);
+    }
+
+    public void sendGoldInfo(int amount) {
+        JsonObject object = new JsonObject();
+        object.addProperty("method", "gold");
+        object.addProperty("amount", amount);
+
+        Gson gson = new Gson();
+        String json = gson.toJson(object);
+        sendJson(json);
     }
 
     public Base getBase() {
@@ -51,11 +67,13 @@ public class Client {
         return session;
     }
 
-    public void sendJson(String json) throws IllegalStateException {
+    public void sendJson(String json) {
         try {
             session.getRemote().sendString(json);
         } catch (IOException e) {
             throw new RuntimeException(e);
+        } catch (IllegalStateException e) {
+            throw new IllegalStateException(e);
         }
     }
 

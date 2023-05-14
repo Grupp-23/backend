@@ -26,6 +26,9 @@ public class MatchHandler extends Thread {
         clients[0].sendJson(json1);
         clients[1].sendJson(json1);
 
+        clients[0].increaseGold(200);
+        clients[1].increaseGold(200);
+
         start();
     }
 
@@ -74,6 +77,8 @@ public class MatchHandler extends Thread {
 
         clients[0].sendJson("{ \"method\": \"spawn\",\"type\":"+characterType+",\"team\":"+team+",\"id\":"+characterCounter+",\"pos\": "+character.getPosition()+"}");
         clients[1].sendJson("{ \"method\": \"spawn\",\"type\":"+characterType+",\"team\":"+team+",\"id\":"+characterCounter+",\"pos\": "+character.getPosition()+"}");
+
+        client.reduceGold(character.getCost());
     }
 
     public void updateCharacterPosition(Character character, int team) {
