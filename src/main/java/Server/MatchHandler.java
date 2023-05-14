@@ -12,10 +12,15 @@ import java.util.Random;
 
 public class MatchHandler extends Thread {
 
+    private final int startGold = 200;
+    private final int passiveIncomeAmount = 5;
+    private final int passiveIncomeInterval = 2000; // milliseconds
+
     private Client[] clients;
     private ArrayList<Character>[] teamCharacters;
 
     private int characterCounter = 0;
+    private long lastIncomeTick = 0; // Last time the players got passive income
 
     public MatchHandler(Client client0, Client client1) {
         initCharacterLists();
@@ -26,8 +31,8 @@ public class MatchHandler extends Thread {
         clients[0].sendJson(json1);
         clients[1].sendJson(json1);
 
-        clients[0].increaseGold(200);
-        clients[1].increaseGold(200);
+        clients[0].increaseGold(startGold);
+        clients[1].increaseGold(startGold);
 
         start();
     }
@@ -184,9 +189,19 @@ public class MatchHandler extends Thread {
         clients[killerId].increaseGold(character.getKillReward());
     }
 
+    public void updatePassiveIncome(long time) {
+        lastIncomeTick = time;
+        clients[0].increaseGold(passiveIncomeAmount);
+        clients[1].increaseGold(passiveIncomeAmount);
+    }
+
     public void update() {
 
         long currentTime = System.currentTimeMillis();
+
+        if (currentTime >= lastIncomeTick+passiveIncomeInterval) {
+            updatePassiveIncome(currentTime);
+        }
 
         for (int currentTeam = 0; currentTeam < clients.length; currentTeam++) {
             int enemyId = (currentTeam -1)*(-1);
