@@ -34,15 +34,7 @@ public class Melee extends Character {
         super.takeDamage(damage);
     }
 
-    /**
-     * Check if the character is alive or not.
-     *
-     * @return
-     */
-    @Override
-    public boolean isAlive(){
-        return false;
-    }
+
 
     /**
      * Sends the reward to the opponent for killing the character.

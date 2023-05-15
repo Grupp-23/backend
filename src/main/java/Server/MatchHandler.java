@@ -134,7 +134,7 @@ public class MatchHandler extends Thread {
 
         Gson gson = new Gson();
         String json = gson.toJson(obj);
-        //System.out.println("New pos: "+json);
+        System.out.println("New pos: "+json);
         client1.sendJson(json);
         client0.sendJson(json);
 
@@ -148,7 +148,7 @@ public class MatchHandler extends Thread {
 
         Gson gson = new Gson();
         String json = gson.toJson(object);
-        //System.out.println("Remove: "+json);
+        System.out.println("Remove: "+json);
         client1.sendJson(json);
         client0.sendJson(json);
 
@@ -184,9 +184,11 @@ public class MatchHandler extends Thread {
     public void removeCharacterFromlist(int team, int indexInList){
         if(team == 0){
             team0Characters.remove(indexInList);
+
         }
         if(team == 1){
             team1Characters.remove(indexInList);
+
         }
     }
 
@@ -238,7 +240,7 @@ public class MatchHandler extends Thread {
 
                         player0.increaseGold(team1Characters.get(0).getKillReward());
                         System.out.println("Player-0 earned: "+ team1Characters.get(0).getKillReward());
-
+                        team1Characters.get(0).setAlive(false);
                         removeCharacter(client1.getTeam(), team1Characters.get(0).getCharacterId());
                         removeCharacterFromlist(1,0);
 
@@ -247,13 +249,15 @@ public class MatchHandler extends Thread {
                     continue;
                 }
             }
+            if(characterTeam0.isAlive()){
+                characterTeam0.updatePosition(characterTeam0.getSpeed(),1);
+                JsonObject obj = new JsonObject();
+                obj.addProperty("team", 0);
+                obj.addProperty("id",characterTeam0.getCharacterId());
+                obj.addProperty("pos",characterTeam0.getPosition());
+                jsonArray.add(obj);
+            }
 
-            characterTeam0.updatePosition(characterTeam0.getSpeed(),1);
-            JsonObject obj = new JsonObject();
-            obj.addProperty("team", 0);
-            obj.addProperty("id",characterTeam0.getCharacterId());
-            obj.addProperty("pos",characterTeam0.getPosition());
-            jsonArray.add(obj);
 
 
 
@@ -288,7 +292,7 @@ public class MatchHandler extends Thread {
 
                         player1.increaseGold(team0Characters.get(0).getKillReward());
                         System.out.println("Player-0 earned: "+ team0Characters.get(0).getKillReward());
-
+                        team0Characters.get(0).setAlive(false);
                         removeCharacter(client0.getTeam(), team0Characters.get(0).getCharacterId());
                         removeCharacterFromlist(0,0);
 
@@ -297,13 +301,15 @@ public class MatchHandler extends Thread {
                     continue;
                 }
             }
+            if (characterTeam1.isAlive()){
+                characterTeam1.updatePosition(characterTeam1.getSpeed(),(-1));
+                JsonObject obj = new JsonObject();
+                obj.addProperty("team", 1);
+                obj.addProperty("id",characterTeam1.getCharacterId());
+                obj.addProperty("pos",characterTeam1.getPosition());
+                jsonArray.add(obj);
+            }
 
-            characterTeam1.updatePosition(characterTeam1.getSpeed(),(-1));
-            JsonObject obj = new JsonObject();
-            obj.addProperty("team", 1);
-            obj.addProperty("id",characterTeam1.getCharacterId());
-            obj.addProperty("pos",characterTeam1.getPosition());
-            jsonArray.add(obj);
         }
 
         return jsonArray;

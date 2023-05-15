@@ -36,15 +36,6 @@ public class Rider extends Character {
     }
 
 
-    /**
-     * Check if the character is alive or not.
-     *
-     * @return
-     */
-    @Override
-    public boolean isAlive(){
-        return this.getHealthPoints() > 0;
-    }
 
     /**
      * Sends the reward to the opponent for killing the character.
