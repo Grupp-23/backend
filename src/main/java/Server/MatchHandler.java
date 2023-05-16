@@ -159,9 +159,13 @@ public class MatchHandler extends Thread {
         return client.getGold() >= cost;
     }
 
-    public void attackBase(Character character, Base base, long time){
+    public void attackBase(Character character, Base base, int victimId, int attackerId, long time){
         character.attack(time);
         base.takeDamage(character.getDamage());
+
+        if (base.isDestroyed()) {
+            announceWinner(attackerId, victimId);
+        }
     }
 
     public void attackCharacter(Character allyCharacter, Character enemyCharacter, long time, int victimId, int attackerId) {
@@ -187,6 +191,26 @@ public class MatchHandler extends Thread {
         clients[1].sendJson(json);
 
         clients[killerId].increaseGold(character.getKillReward());
+    }
+
+    public void announceWinner(int winnerId, int loserId) {
+        JsonObject object = new JsonObject();
+        object.addProperty("method", "win");
+        object.addProperty("status", "Victory");
+
+        Gson gson = new Gson();
+        String json = gson.toJson(object);
+
+        System.out.println(json);
+
+        clients[winnerId].sendJson(json);
+
+        object.addProperty("status", "Defeat");
+
+        json = gson.toJson(object);
+        System.out.println(json);
+
+        clients[loserId].sendJson(json);
     }
 
     public void updatePassiveIncome(long time) {
@@ -219,7 +243,7 @@ public class MatchHandler extends Thread {
                 // Attack enemy base
                 else if(baseCollision(currentTeam, currentCharacter)) {
                     if (currentCharacter.canAttack(currentTime)) {
-                        attackBase(currentCharacter, clients[enemyId].getBase(), currentTime);
+                        attackBase(currentCharacter, clients[enemyId].getBase(), enemyId, i, currentTime);
                     }
                 }
 
