@@ -3,28 +3,30 @@ package Server;
 import Model.*;
 import Model.Character;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Random;
+import java.util.*;
 
 public class MatchHandler extends Thread {
 
-    private final int startGold = 20;
+    private final int startGold =15;
     private final int passiveIncomeAmount = 5;
     private final int passiveIncomeInterval = 5000; // milliseconds
 
     private Client[] clients;
     private ArrayList<Character>[] teamCharacters;
 
+    private LinkedList<Integer>[] queueCharacters; //Queue for characters to be spawned
+
     private int characterCounter = 0;
     private long lastIncomeTick = 0; // Last time the players got passive income
+
+    private long[] lastSpawnedTime = new long[2];
 
     public MatchHandler(Client client0, Client client1) {
         initCharacterLists();
         initClients(client0, client1);
+        initCharactersQueue();
 
         String json1 = "found";
 
@@ -53,15 +55,33 @@ public class MatchHandler extends Thread {
         teamCharacters[1] = new ArrayList<>();
     }
 
+    public void initCharactersQueue(){
+        queueCharacters = new LinkedList[2];
+        queueCharacters[0] = new LinkedList<>();
+        queueCharacters[1] = new LinkedList<>();
+    }
+
+    public void addCharacterToQueue(int characterType, Client client){
+        queueCharacters[client.getTeam()].add(characterType);
+        System.out.println("Character have been added to queue");
+    }
+    public int getCharacterFromQueue(int team){
+        int characterCurrent = queueCharacters[team].getFirst();
+        queueCharacters[team].removeFirst();
+        System.out.println("Character: "+ characterCurrent + "has been return to team " + team + " Character list");
+        return characterCurrent;
+    }
+
     public Client[] getClients() {
         return clients;
     }
 
-    public void spawnCharacter(Client client, int characterType) {
+    public void spawnCharacter(Client client, int characterType, long time) {
         characterCounter++;
 
-        int team = client.getTeam();
 
+        int team = client.getTeam();
+        lastSpawnedTime[team] = time;
         Character character = null;
 
         switch(characterType) {
@@ -78,7 +98,7 @@ public class MatchHandler extends Thread {
                 return;
         }
 
-        if (!hasGold(client, character.getCost())) {
+        if (!hasGold(client, character.getCost())) { //Check if player have gold
             return;
         }
 
@@ -229,6 +249,19 @@ public class MatchHandler extends Thread {
 
         for (int currentTeam = 0; currentTeam < clients.length; currentTeam++) {
             int enemyId = (currentTeam -1)*(-1);
+
+            if ((queueCharacters[currentTeam].size() > 0)){ //If queue has one character and the time have been 2000 ms after last spawned
+                if(currentTime-lastSpawnedTime[currentTeam] >= 2000){
+                    Client client = clients[currentTeam];
+                    int characterType = getCharacterFromQueue(currentTeam);
+                    spawnCharacter(client,characterType,currentTime);
+
+                }
+
+
+
+
+            }
 
             for (int i = 0; i < teamCharacters[currentTeam].size(); i++) {
                 Character currentCharacter = teamCharacters[currentTeam].get(i);

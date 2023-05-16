@@ -99,7 +99,7 @@ public class EchoSocket {
             if (method.equals("spawn")) {
                 int type = jsonObject.get("type").getAsInt();
                 //matches.get(session).spawnCharacter(clients.get(session), type);
-                matches.get(clients.get(String.valueOf(session.getRemote().getInetSocketAddress()))).spawnCharacter(clients.get(String.valueOf(session.getRemote().getInetSocketAddress())),type);
+                matches.get(clients.get(String.valueOf(session.getRemote().getInetSocketAddress()))).addCharacterToQueue(type,clients.get(String.valueOf(session.getRemote().getInetSocketAddress())));
             }
 
         } catch (Exception e) { }
