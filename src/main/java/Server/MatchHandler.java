@@ -251,15 +251,13 @@ public class MatchHandler extends Thread {
             int enemyId = (currentTeam -1)*(-1);
 
             if ((queueCharacters[currentTeam].size() > 0)){ //If queue has one character and the time have been 2000 ms after last spawned
+
                 if(currentTime-lastSpawnedTime[currentTeam] >= 2000){
                     Client client = clients[currentTeam];
                     int characterType = getCharacterFromQueue(currentTeam);
                     spawnCharacter(client,characterType,currentTime);
 
                 }
-
-
-
 
             }
 
