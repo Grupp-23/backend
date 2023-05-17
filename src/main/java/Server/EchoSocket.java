@@ -80,8 +80,10 @@ public class EchoSocket {
             }
 
             clients.remove(targetClients[i].getSession().getRemote().getInetSocketAddress().toString());
-        }
 
+        }
+        targetMatch.setStopThread(true);
+        targetMatch.stopWithInterrupt();
         matches.remove(targetClients[0]);
     }
 

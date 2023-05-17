@@ -20,7 +20,7 @@ public class MatchHandler extends Thread {
 
     private int characterCounter = 0;
     private long lastIncomeTick = 0; // Last time the players got passive income
-
+    private volatile boolean stopThread = false; // Boolean to gracefully stop match-thread //todo ta kanske bort volitile
     private long[] lastSpawnedTime = new long[2];
 
     public MatchHandler(Client client0, Client client1) {
@@ -231,6 +231,10 @@ public class MatchHandler extends Thread {
         System.out.println(json);
 
         clients[loserId].sendJson(json);
+
+        stopThread = true;
+        stopWithInterrupt();
+
     }
 
     public void updatePassiveIncome(long time) {
@@ -289,13 +293,23 @@ public class MatchHandler extends Thread {
 
     @Override
     public void run() {
-        while (true) {
+        while (!stopThread && !Thread.currentThread().isInterrupted()) {
             update();
             try {
-                sleep(10);
+                Thread.sleep(10);
             } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+                Thread.currentThread().interrupt();
+
             }
         }
+
+    }
+
+    public void stopWithInterrupt() {
+        interrupt(); // Interrupt the thread to wake it up from blocking or waiting
+    }
+
+    public void setStopThread(boolean stopThread) {
+        this.stopThread = stopThread;
     }
 }
