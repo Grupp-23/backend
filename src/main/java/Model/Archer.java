@@ -10,7 +10,7 @@ public class Archer extends Character {
     private final int killedReward = 15; // When an archer is killed the opponent gets 15 gold.
     private final int cost = 25; // Cost 25 gold (in-game currency).
     private final int damage = 30; // Each hit does 30 damage to opponent character.
-    private final int attackRange = 3; // Assumed 50 pixels range
+    private final int attackRange = 4; // Assumed 50 pixels range
 
 
     /**
