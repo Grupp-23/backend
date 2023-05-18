@@ -126,7 +126,6 @@ public class MatchHandler extends Thread {
     public void spawnCharacter(Client client, int characterType, long time) {
         characterCounter++;
 
-
         int team = client.getTeam();
         lastSpawnedTime[team] = time;
         Character character = null;
@@ -292,7 +291,7 @@ public class MatchHandler extends Thread {
         }
 
         if (base.isDestroyed()) {
-            announceWinner(attackerId, victimId);
+            announceMatchEnd(attackerId, victimId);
         }
     }
 
@@ -392,27 +391,29 @@ public class MatchHandler extends Thread {
 
     /**
      * Announce a winner and stops the match update
+     * @param team the relevant team id
+     * @param status whether "Victory" or "Defeat"
+     */
+    public void announceWinner(int team, String status) {
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("method", "win");
+        jsonObject.addProperty("status", status);
+
+        Gson gson = new Gson();
+        String json = gson.toJson(jsonObject);
+
+        clients[team].sendJson(json);
+    }
+
+    /**
+     * Stop the match and announce winners
      * @param winnerId the team id of the winner
      * @param loserId the team id of the loser
      */
-    public void announceWinner(int winnerId, int loserId) {
-        JsonObject object = new JsonObject();
-        object.addProperty("method", "win");
-        object.addProperty("status", "Victory");
-
-        Gson gson = new Gson();
-        String json = gson.toJson(object);
-
-        System.out.println(json);
-
-        clients[winnerId].sendJson(json);
-
-        object.addProperty("status", "Defeat");
-
-        json = gson.toJson(object);
-        System.out.println(json);
-
-        clients[loserId].sendJson(json);
+    public void announceMatchEnd(int winnerId, int loserId) {
+        System.out.println(winnerId + " " + loserId);
+        announceWinner(winnerId, "Victory");
+        announceWinner(loserId, "Defeat");
 
         stopThread = true;
         stopWithInterrupt();
@@ -448,9 +449,7 @@ public class MatchHandler extends Thread {
                     Client client = clients[currentTeam];
                     int characterType = getCharacterFromQueue(currentTeam);
                     spawnCharacter(client,characterType,currentTime);
-
                 }
-
             }
 
             for (int i = teamCharacters[currentTeam].size() - 1; i >= 0; i--) {
@@ -466,7 +465,7 @@ public class MatchHandler extends Thread {
                 // Attack enemy base
                 else if(baseCollision(currentTeam, currentCharacter)) {
                     if (currentCharacter.canAttack(currentTime)) {
-                        attackBase(currentCharacter, clients[enemyId].getBase(), enemyId, i, currentTime);
+                        attackBase(currentCharacter, clients[enemyId].getBase(), enemyId, currentTeam, currentTime);
                     }
                 }
 

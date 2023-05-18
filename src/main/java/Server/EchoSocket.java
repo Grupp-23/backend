@@ -74,6 +74,7 @@ public class EchoSocket {
 
         for (int i = 0; i < targetClients.length; i++) {
             if (targetClients[i].getSession().isOpen()) {
+                targetMatch.announceWinner(i, "Victory");
                 targetClients[i].getSession().close();
             }
 
