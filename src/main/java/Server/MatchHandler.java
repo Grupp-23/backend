@@ -7,15 +7,17 @@ import com.google.gson.JsonObject;
 
 import java.util.*;
 
+/**
+ * Represents a single match between 2 clients
+ */
 public class MatchHandler extends Thread {
 
-    private final int startGold =15;
+    private final int startGold = 15;
     private final int passiveIncomeAmount = 5;
     private final int passiveIncomeInterval = 5000; // milliseconds
 
     private Client[] clients;
     private ArrayList<Character>[] teamCharacters;
-
     private LinkedList<Integer>[] queueCharacters; //Queue for characters to be spawned
     private ArrayList<Projectile>[] projectiles;
 
@@ -42,6 +44,11 @@ public class MatchHandler extends Thread {
         start();
     }
 
+    /**
+     * Adds the clients to clients list and assigns them a team number
+     * @param client0
+     * @param client1
+     */
     public void initClients(Client client0, Client client1) {
         clients = new Client[2];
         clients[0] = client0;
@@ -51,6 +58,9 @@ public class MatchHandler extends Thread {
         clients[1].setTeam(1);
     }
 
+    /**
+     * Initializes the list of characters for each team
+     */
     public void initCharacterLists() {
         teamCharacters = new ArrayList[2];
 
@@ -58,23 +68,18 @@ public class MatchHandler extends Thread {
         teamCharacters[1] = new ArrayList<>();
     }
 
+    /**
+     * Initializes the queue for character spawning for each team
+     */
     public void initCharactersQueue(){
         queueCharacters = new LinkedList[2];
         queueCharacters[0] = new LinkedList<>();
         queueCharacters[1] = new LinkedList<>();
     }
 
-    public void addCharacterToQueue(int characterType, Client client){
-        queueCharacters[client.getTeam()].add(characterType);
-        System.out.println("Character have been added to queue");
-    }
-    public int getCharacterFromQueue(int team){
-        int characterCurrent = queueCharacters[team].getFirst();
-        queueCharacters[team].removeFirst();
-        System.out.println("Character: "+ characterCurrent + "has been return to team " + team + " Character list");
-        return characterCurrent;
-    }
-    
+    /**
+     * Initializes the list for projectiles for each team
+     */
     public void initProjectileLists() {
         projectiles = new ArrayList[2];
 
@@ -82,10 +87,42 @@ public class MatchHandler extends Thread {
         projectiles[1] = new ArrayList<>();
     }
 
+    /**
+     * Adds a character to the spawning queue for selected team
+     * @param characterType the character type to spawn
+     * @param client the client which should spawn the character
+     */
+    public void addCharacterToQueue(int characterType, Client client){
+        queueCharacters[client.getTeam()].add(characterType);
+        System.out.println("Character have been added to queue");
+    }
+
+    /**
+     * Gets and removes the first character in the queue
+     * @param team
+     * @return the character type that is first in the queue
+     */
+    public int getCharacterFromQueue(int team){
+        int characterCurrent = queueCharacters[team].getFirst();
+        queueCharacters[team].removeFirst();
+        System.out.println("Character: "+ characterCurrent + "has been return to team " + team + " Character list");
+        return characterCurrent;
+    }
+
+    /**
+     * Gets both clients as an array of length 2
+     * @return the relevant clients for this match
+     */
     public Client[] getClients() {
         return clients;
     }
 
+    /**
+     * Spawns a character for the selected client and saves the time when this character was spawned
+     * @param client client that should spawn the character
+     * @param characterType which type of character should be spawned
+     * @param time the current time
+     */
     public void spawnCharacter(Client client, int characterType, long time) {
         characterCounter++;
 
@@ -120,6 +157,11 @@ public class MatchHandler extends Thread {
         client.reduceGold(character.getCost());
     }
 
+    /**
+     * Updates the position of a character
+     * @param character the character which should have its position updated
+     * @param team which team the character is part of
+     */
     public void updateCharacterPosition(Character character, int team) {
 
         int temp = (int)(((team-0.5f)*2)*-1);
@@ -139,6 +181,12 @@ public class MatchHandler extends Thread {
         clients[1].sendJson(json);
     }
 
+    /**
+     * Checks if a base is inside a character's attack range
+     * @param team the opponent team to the character
+     * @param character which characted is checked for collision
+     * @return if the base is in attack range of character
+     */
     public boolean baseCollision(int team, Character character) {
 
         float baseColl = character.getSize()/2 + character.getAttackRange();
@@ -151,6 +199,13 @@ public class MatchHandler extends Thread {
         }
     }
 
+    /**
+     * Checks if a character is colliding with an allied character
+     * @param team the team of the relevant character
+     * @param index the index of the relevant character
+     * @param character the relevant character
+     * @return if the relevant character is colliding with an allied character
+     */
     public boolean allyCollision(int team, int index, Character character) {
 
         if (index < 1) {
@@ -168,6 +223,13 @@ public class MatchHandler extends Thread {
         }
     }
 
+    /**
+     * Checks if an enemy character is inside the attack range of a character
+     * @param team the team of the relevant character
+     * @param character the relevant character
+     * @param enemyId the enemy team of the relevant character
+     * @return if an enemy character is inside attack range of the relevant character
+     */
     public boolean enemyCollision(int team, Character character, int enemyId) {
 
         if (teamCharacters[enemyId].size() == 0) {
@@ -185,7 +247,13 @@ public class MatchHandler extends Thread {
         }
     }
 
-    public boolean projectileCollision(Projectile projectile, int victimId) {
+    /**
+     * Checks if a projectile is colliding with an enemy character
+     * @param projectile the relevant projectile
+     * @param victimId the enemy team id of the relevant projectile
+     * @return if the projectile has hit an enemy character
+     */
+    public boolean projectileCharacterCollision(Projectile projectile, int victimId) {
         if (victimId == 1) {
             return (projectile.getX() >= teamCharacters[victimId].get(0).getPosition());
         }
@@ -194,10 +262,24 @@ public class MatchHandler extends Thread {
         }
     }
 
+    /**
+     * Checks if a client has enough gold
+     * @param client the relevant client
+     * @param cost the cost of what the relevant client is trying to purchase
+     * @return if the client has enough gold
+     */
     public boolean hasGold(Client client, int cost) {
         return client.getGold() >= cost;
     }
 
+    /**
+     * Attack a base
+     * @param character the character that is attacking
+     * @param base the base that is being attacked
+     * @param victimId the team id of the victim
+     * @param attackerId the team id of the attacker
+     * @param time the time of when the attacker is attacking
+     */
     public void attackBase(Character character, Base base, int victimId, int attackerId, long time){
         character.attack(time);
 
@@ -214,6 +296,14 @@ public class MatchHandler extends Thread {
         }
     }
 
+    /**
+     * Attack a character
+     * @param allyCharacter the character that is attacking
+     * @param enemyCharacter the character that is being attacked
+     * @param time the time of when the attacker is attacking
+     * @param victimId the team id of the victim
+     * @param attackerId the team id of the attacker
+     */
     public void attackCharacter(Character allyCharacter, Character enemyCharacter, long time, int victimId, int attackerId) {
         allyCharacter.attack(time);
 
@@ -230,7 +320,13 @@ public class MatchHandler extends Thread {
         }
     }
 
-    public void projectileAttack(int projectileId, int victimId, int attackerId) {
+    /**
+     * Projectile attack character
+     * @param projectileId the id of the projectile which is attacking
+     * @param victimId the team id of the victim
+     * @param attackerId the team id of the attacker
+     */
+    public void projectileCharacterAttack(int projectileId, int victimId, int attackerId) {
         Character victim = teamCharacters[victimId].get(0);
 
         victim.takeDamage(projectiles[attackerId].get(projectileId).getDamage());
@@ -241,6 +337,16 @@ public class MatchHandler extends Thread {
         }
     }
 
+    /**
+     * Spawns a projectile
+     * @param x the x position of the projectile
+     * @param y the y position of the projectile
+     * @param damage the amount of damage that the projectile should do
+     * @param speed the speed of the projectile
+     * @param direction the direction of the projectiles in radians
+     * @param team the id of the team that should spawn a projectile
+     * @param distance the distance from the projectile to the projectile's target
+     */
     public void spawnProjectile(double x, double y, int damage, float speed, double direction, int team, double distance) {
         projectileCounter++;
 
@@ -262,6 +368,12 @@ public class MatchHandler extends Thread {
         clients[1].sendJson(json);
     }
 
+    /**
+     * Remove a character
+     * @param character the relevant character
+     * @param victimId the team id of the relevant character
+     * @param killerId the team id of the relevant character's killer
+     */
     public void removeCharacter(Character character, int victimId, int killerId) {
         teamCharacters[victimId].remove(character);
 
@@ -278,6 +390,11 @@ public class MatchHandler extends Thread {
         clients[killerId].increaseGold(character.getKillReward());
     }
 
+    /**
+     * Announce a winner and stops the match update
+     * @param winnerId the team id of the winner
+     * @param loserId the team id of the loser
+     */
     public void announceWinner(int winnerId, int loserId) {
         JsonObject object = new JsonObject();
         object.addProperty("method", "win");
@@ -299,15 +416,21 @@ public class MatchHandler extends Thread {
 
         stopThread = true;
         stopWithInterrupt();
-
     }
 
+    /**
+     * Give passive income to both clients
+     * @param time the time of when the income is added
+     */
     public void updatePassiveIncome(long time) {
         lastIncomeTick = time;
         clients[0].increaseGold(passiveIncomeAmount);
         clients[1].increaseGold(passiveIncomeAmount);
     }
 
+    /**
+     * The update method which updates the whole match (is called every 10 ms)
+     */
     public void update() {
 
         long currentTime = System.currentTimeMillis();
@@ -356,8 +479,8 @@ public class MatchHandler extends Thread {
             for (int i = projectiles[currentTeam].size() - 1; i >= 0; i--) {
                 Projectile tempProjectile = projectiles[currentTeam].get(i);
 
-                if (projectileCollision(tempProjectile, enemyId)) {
-                    projectileAttack(i, enemyId, currentTeam);
+                if (projectileCharacterCollision(tempProjectile, enemyId)) {
+                    projectileCharacterAttack(i, enemyId, currentTeam);
                 }
 
                 else {
@@ -381,10 +504,17 @@ public class MatchHandler extends Thread {
 
     }
 
+    /**
+     * Interrupts the thread
+     */
     public void stopWithInterrupt() {
         interrupt(); // Interrupt the thread to wake it up from blocking or waiting
     }
 
+    /**
+     * Stops the thread
+     * @param stopThread should the thread be stopped
+     */
     public void setStopThread(boolean stopThread) {
         this.stopThread = stopThread;
     }

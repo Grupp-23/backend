@@ -46,7 +46,6 @@ public class EchoSocket {
             clients.put(String.valueOf(sessions.get(1).getRemote().getInetSocketAddress()), client1);
             clients.put(String.valueOf(sessions.get(0).getRemote().getInetSocketAddress()), client0);
 
-
             sessions.remove(1);
             sessions.remove(0);
             System.out.println("Clients is placed in match");
@@ -75,7 +74,6 @@ public class EchoSocket {
 
         for (int i = 0; i < targetClients.length; i++) {
             if (targetClients[i].getSession().isOpen()) {
-                System.out.println("Player " + i + " won");
                 targetClients[i].getSession().close();
             }
 
