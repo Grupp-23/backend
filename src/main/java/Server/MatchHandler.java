@@ -497,7 +497,6 @@ public class MatchHandler extends Thread {
                 Thread.sleep(10);
             } catch (InterruptedException e) {
                // Thread.currentThread().interrupt();
-                 // todo Kolla varför det blir errors ibland när man kryssar ner men inte alltid
 
             }
         }
