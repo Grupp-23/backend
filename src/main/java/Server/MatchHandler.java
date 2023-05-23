@@ -308,7 +308,8 @@ public class MatchHandler extends Thread {
 
         if (allyCharacter.getAttackRange() >= 0.5f) {
             int temp = (int)(((victimId-0.5f)*2));
-            spawnProjectile(allyCharacter.getPosition(), 8, allyCharacter.getDamage(), 0.21f, Math.acos(temp), attackerId, Math.abs(allyCharacter.getPosition() - enemyCharacter.getPosition()));
+            //double distance = calculateProjectileDistance(enemyCharacter, allyCharacter, 0.21f);
+            spawnProjectile(allyCharacter.getPosition(), 8, allyCharacter.getDamage(), 0.21f, Math.acos(temp), attackerId, Math.abs(enemyCharacter.getPosition() - allyCharacter.getPosition()));
         }
         else {
             enemyCharacter.takeDamage(allyCharacter.getDamage());
@@ -329,11 +330,23 @@ public class MatchHandler extends Thread {
         Character victim = teamCharacters[victimId].get(0);
 
         victim.takeDamage(projectiles[attackerId].get(projectileId).getDamage());
-        projectiles[attackerId].remove(projectileId);
 
         if (victim.getHealthPoints() <= 0) {
             removeCharacter(victim, victimId, attackerId);
         }
+
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("method", "projectiledmg");
+        jsonObject.addProperty("id", projectiles[attackerId].get(projectileId).getId());
+
+        Gson gson = new Gson();
+        String json = gson.toJson(jsonObject);
+
+        clients[0].sendJson(json);
+        clients[1].sendJson(json);
+
+        projectiles[attackerId].remove(projectileId);
+
     }
 
     /**
