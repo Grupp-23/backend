@@ -40,6 +40,7 @@
                 <configuration>
                     <httpConnector>
                         <host>0.0.0.0</host>
+                        <port>9999</port>
                     </httpConnector>
                 </configuration>
             </plugin>
