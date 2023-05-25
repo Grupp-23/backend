@@ -8,16 +8,36 @@
     <artifactId>backend</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+
+
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.4</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals><goal>copy</goal></goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.eclipse.jetty</groupId>
+                                    <artifactId>jetty-runner</artifactId>
+                                    <version>9.4.9.v20180320</version>
+                                    <destFileName>jetty-runner.jar</destFileName>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-maven-plugin</artifactId>
                 <version>11.0.6</version>
                 <configuration>
-                    <webAppConfig>
-                        <contextPath>/my-webapp</contextPath>
-                    </webAppConfig>
                     <httpConnector>
                         <port>${PORT}</port>
                     </httpConnector>
@@ -35,6 +55,7 @@
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <jetty.http.port>9999</jetty.http.port>
     </properties>
 
     <dependencies>
