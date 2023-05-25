@@ -1,0 +1,11 @@
+Model\Archer.class
+Server\Main.class
+Model\Melee.class
+Server\EchoSocket.class
+Model\Projectile.class
+Server\Client.class
+Server\MatchHandler.class
+Model\Base.class
+Model\Character.class
+Model\Rider.class
+Server\Main$1.class
