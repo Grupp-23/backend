@@ -8,7 +8,7 @@ public class Base {
     }
 
     public boolean isDestroyed(){
-        return baseHealthPoints >= 0;
+        return baseHealthPoints <= 0;
     }
     public int getBaseHealthPoints(){
         return baseHealthPoints;
