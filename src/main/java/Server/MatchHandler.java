@@ -257,7 +257,7 @@ public class MatchHandler extends Thread {
             return (projectile.getX() >= teamCharacters[victimId].get(0).getPosition());
         }
         else {
-            return (projectile.getX() <= teamCharacters[victimId].get(0).getPosition());
+            return (projectile.getX() <= teamCharacters[victimId]. get(0).getPosition());
         }
     }
 
@@ -318,6 +318,17 @@ public class MatchHandler extends Thread {
         if (enemyCharacter.getHealthPoints() <= 0) {
             removeCharacter(enemyCharacter, victimId, attackerId);
         }
+
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("method", "characterdmg");
+
+        Gson gson = new Gson();
+        String json = gson.toJson(jsonObject);
+
+        clients[0].sendJson(json);
+        clients[1].sendJson(json);
+
+
     }
 
     /**
