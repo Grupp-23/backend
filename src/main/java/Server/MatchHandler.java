@@ -253,11 +253,25 @@ public class MatchHandler extends Thread {
      * @return if the projectile has hit an enemy character
      */
     public boolean projectileCharacterCollision(Projectile projectile, int victimId) {
+
+        if (teamCharacters[victimId].size() == 0) {
+            return false;
+        }
+
         if (victimId == 1) {
             return (projectile.getX() >= teamCharacters[victimId].get(0).getPosition());
         }
         else {
             return (projectile.getX() <= teamCharacters[victimId]. get(0).getPosition());
+        }
+    }
+
+    public boolean projectileBaseCollision(Projectile projectile, int victimId) {
+        if (victimId == 1) {
+            return (projectile.getX() >= 89);
+        }
+        else {
+            return (projectile.getX() <= 8);
         }
     }
 
@@ -326,8 +340,27 @@ public class MatchHandler extends Thread {
 
         clients[0].sendJson(json);
         clients[1].sendJson(json);
+    }
 
+    public void projectileBaseAttack(int projectileId, int victimId, int attackerId) {
+        Projectile projectile = projectiles[attackerId].get(projectileId);
+        clients[victimId].getBase().takeDamage(projectile.getDamage());
 
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("method", "projectiledmg");
+        jsonObject.addProperty("id", projectiles[attackerId].get(projectileId).getId());
+
+        Gson gson = new Gson();
+        String json = gson.toJson(jsonObject);
+
+        clients[0].sendJson(json);
+        clients[1].sendJson(json);
+
+        projectiles[attackerId].remove(projectileId);
+
+        if (clients[victimId].getBase().isDestroyed()) {
+            announceMatchEnd(attackerId, victimId);
+        }
     }
 
     /**
@@ -501,6 +534,10 @@ public class MatchHandler extends Thread {
 
                 if (projectileCharacterCollision(tempProjectile, enemyId)) {
                     projectileCharacterAttack(i, enemyId, currentTeam);
+                }
+
+                else if (projectileBaseCollision(tempProjectile, enemyId)) {
+                    projectileBaseAttack(i, enemyId, currentTeam);
                 }
 
                 else {
