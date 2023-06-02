@@ -12,9 +12,9 @@ import java.util.*;
  */
 public class MatchHandler extends Thread {
 
-    private final int startGold = 15;
+    private final int startGold = 30;
     private final int passiveIncomeAmount = 5;
-    private final int passiveIncomeInterval = 5000; // milliseconds
+    private final int passiveIncomeInterval = 4000; // milliseconds
 
     private Client[] clients;
     private ArrayList<Character>[] teamCharacters;

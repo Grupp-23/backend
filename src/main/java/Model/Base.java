@@ -1,7 +1,7 @@
 package Model;
 
 public class Base {
-    private int baseHealthPoints = 1000;
+    private int baseHealthPoints = 250;
 
     public void takeDamage(int damage){
         baseHealthPoints -= damage;
