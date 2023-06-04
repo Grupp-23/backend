@@ -163,9 +163,9 @@ public class MatchHandler extends Thread {
      */
     public void updateCharacterPosition(Character character, int team) {
 
-        int temp = (int)(((team-0.5f)*2)*-1);
+        int direction = team == 1 ? -1 : 1;
 
-        character.updatePosition(character.getSpeed(),temp);
+        character.updatePosition(character.getSpeed(),direction);
 
         JsonObject obj = new JsonObject();
         obj.addProperty("method", "move");
@@ -253,11 +253,25 @@ public class MatchHandler extends Thread {
      * @return if the projectile has hit an enemy character
      */
     public boolean projectileCharacterCollision(Projectile projectile, int victimId) {
+
+        if (teamCharacters[victimId].size() == 0) {
+            return false;
+        }
+
         if (victimId == 1) {
             return (projectile.getX() >= teamCharacters[victimId].get(0).getPosition());
         }
         else {
-            return (projectile.getX() <= teamCharacters[victimId].get(0).getPosition());
+            return (projectile.getX() <= teamCharacters[victimId]. get(0).getPosition());
+        }
+    }
+
+    public boolean projectileBaseCollision(Projectile projectile, int victimId) {
+        if (victimId == 1) {
+            return (projectile.getX() >= 89);
+        }
+        else {
+            return (projectile.getX() <= 8);
         }
     }
 
@@ -283,8 +297,8 @@ public class MatchHandler extends Thread {
         character.attack(time);
 
         if (character.getAttackRange() >= 0.5f) {
-            int temp = (int)(((victimId-0.5f)*2));
-            spawnProjectile(character.getPosition(), 8, character.getDamage(), 0.21f, Math.acos(temp), attackerId, 3);
+            int direction = victimId == 1 ? 1 : -1;
+            spawnProjectile(character.getPosition(), 8, character.getDamage(), 0.21f, Math.acos(direction), attackerId);
         }
         else {
             base.takeDamage(character.getDamage());
@@ -307,9 +321,8 @@ public class MatchHandler extends Thread {
         allyCharacter.attack(time);
 
         if (allyCharacter.getAttackRange() >= 0.5f) {
-            int temp = (int)(((victimId-0.5f)*2));
-            //double distance = calculateProjectileDistance(enemyCharacter, allyCharacter, 0.21f);
-            spawnProjectile(allyCharacter.getPosition(), 8, allyCharacter.getDamage(), 0.21f, Math.acos(temp), attackerId, Math.abs(enemyCharacter.getPosition() - allyCharacter.getPosition()));
+            int direction = victimId == 1 ? 1 : -1;
+            spawnProjectile(allyCharacter.getPosition(), 8, allyCharacter.getDamage(), 0.21f, Math.acos(direction), attackerId);
         }
         else {
             enemyCharacter.takeDamage(allyCharacter.getDamage());
@@ -317,6 +330,36 @@ public class MatchHandler extends Thread {
 
         if (enemyCharacter.getHealthPoints() <= 0) {
             removeCharacter(enemyCharacter, victimId, attackerId);
+        }
+
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("method", "characterdmg");
+
+        Gson gson = new Gson();
+        String json = gson.toJson(jsonObject);
+
+        clients[0].sendJson(json);
+        clients[1].sendJson(json);
+    }
+
+    public void projectileBaseAttack(int projectileId, int victimId, int attackerId) {
+        Projectile projectile = projectiles[attackerId].get(projectileId);
+        clients[victimId].getBase().takeDamage(projectile.getDamage());
+
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("method", "projectiledmg");
+        jsonObject.addProperty("id", projectiles[attackerId].get(projectileId).getId());
+
+        Gson gson = new Gson();
+        String json = gson.toJson(jsonObject);
+
+        clients[0].sendJson(json);
+        clients[1].sendJson(json);
+
+        projectiles[attackerId].remove(projectileId);
+
+        if (clients[victimId].getBase().isDestroyed()) {
+            announceMatchEnd(attackerId, victimId);
         }
     }
 
@@ -357,9 +400,8 @@ public class MatchHandler extends Thread {
      * @param speed the speed of the projectile
      * @param direction the direction of the projectiles in radians
      * @param team the id of the team that should spawn a projectile
-     * @param distance the distance from the projectile to the projectile's target
      */
-    public void spawnProjectile(double x, double y, int damage, float speed, double direction, int team, double distance) {
+    public void spawnProjectile(double x, double y, int damage, float speed, double direction, int team) {
         projectileCounter++;
 
         projectiles[team].add(new Projectile(x, y, damage, direction, speed, projectileCounter));
@@ -372,7 +414,6 @@ public class MatchHandler extends Thread {
         obj.addProperty("speed", speed);
         obj.addProperty("x", x);
         obj.addProperty("y", y);
-        obj.addProperty("distance", distance);
 
         Gson gson = new Gson();
         String json = gson.toJson(obj);
@@ -454,7 +495,7 @@ public class MatchHandler extends Thread {
         }
 
         for (int currentTeam = 0; currentTeam < clients.length; currentTeam++) {
-            int enemyId = (currentTeam -1)*(-1);
+            int enemyId = currentTeam == 1 ? 0 : 1;
 
             if ((queueCharacters[currentTeam].size() > 0)){ //If queue has one character and the time have been 2000 ms after last spawned
 
@@ -493,6 +534,10 @@ public class MatchHandler extends Thread {
 
                 if (projectileCharacterCollision(tempProjectile, enemyId)) {
                     projectileCharacterAttack(i, enemyId, currentTeam);
+                }
+
+                else if (projectileBaseCollision(tempProjectile, enemyId)) {
+                    projectileBaseAttack(i, enemyId, currentTeam);
                 }
 
                 else {
